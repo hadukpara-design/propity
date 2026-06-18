@@ -25,7 +25,7 @@ export default function HeroSection({ availableCount }: HeroSectionProps) {
       </div>
 
       {/* For Sale Badge */}
-      <div className="absolute top-24 right-4 sm:right-8 z-10">
+      <div className="absolute top-16 right-4 sm:right-8 z-10">
         <div className="flex items-center gap-2 bg-[#C9A84C] text-[#1A1A2E] px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
           <span className="w-2 h-2 rounded-full bg-[#1A1A2E] animate-pulse" />
           FOR SALE
@@ -33,7 +33,7 @@ export default function HeroSection({ availableCount }: HeroSectionProps) {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
+      <div className="relative z-10 text-center px-4 max-w-5xl mx-auto md:pt-14">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}

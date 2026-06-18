@@ -51,7 +51,7 @@ export default function Footer() {
               </li>
               <li className="flex gap-2 items-center">
                 <Mail className="w-4 h-4 text-[#C9A84C] shrink-0" />
-                <a href="mailto:info@propity.in" className="hover:text-[#C9A84C] transition-colors">info@propity.in</a>
+                <a href="mailto:hadukpara@gmail.com" className="hover:text-[#C9A84C] transition-colors">hadukpara@gmail.com</a>
               </li>
             </ul>
           </div>
