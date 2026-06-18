@@ -46,10 +46,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
           t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
           document,'script','https://connect.facebook.net/en_US/fbevents.js');
-          fbq('init', '472352642851960');
+          fbq('init', '1486845359339502');
           fbq('track', 'PageView');
         `}} />
-        <noscript dangerouslySetInnerHTML={{ __html: `<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=472352642851960&ev=PageView&noscript=1"/>` }} />
+        <noscript dangerouslySetInnerHTML={{ __html: `<img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1486845359339502&ev=PageView&noscript=1"/>` }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
