@@ -4,6 +4,7 @@ import WhyInvestSection from '@/components/sections/WhyInvestSection'
 import LandVsFlatSection from '@/components/sections/LandVsFlatSection'
 import CTABand from '@/components/sections/CTABand'
 import SectionHeader from '@/components/ui/SectionHeader'
+import Image from 'next/image'
 
 async function getAvailableCount() {
   if (!isSupabaseConfigured) return 63
@@ -58,10 +59,11 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto">
           <SectionHeader label="Location" title="Strategic Location — All Major Landmarks at a Glance" centered />
           <div className="mt-8 rounded-2xl overflow-hidden shadow-lg border border-gray-100">
-            <img
+            <Image
               src="/images/location-map.png"
               alt="17 Kani Residential Township Location Map — Agartala, Tripura"
-              className="w-full"
+              width={1400} height={900}
+              className="w-full h-auto"
             />
           </div>
         </div>
@@ -74,18 +76,20 @@ export default async function HomePage() {
           <div className="grid md:grid-cols-2 gap-6 mt-10">
             {/* Taj Vivanta */}
             <div className="rounded-2xl overflow-hidden shadow-md">
-              <img
+              <Image
                 src="/images/taj-vivanta.png"
                 alt="Taj Vivanta 5-Star Hotel (Under Construction)"
-                className="w-full object-cover"
+                width={800} height={600}
+                className="w-full h-auto"
               />
             </div>
             {/* IPL Stadium */}
             <div className="rounded-2xl overflow-hidden shadow-md">
-              <img
+              <Image
                 src="/images/ipl-stadium.png"
                 alt="Upcoming IPL Stadium (Under Construction)"
-                className="w-full object-cover"
+                width={800} height={600}
+                className="w-full h-auto"
               />
             </div>
           </div>
@@ -94,10 +98,11 @@ export default async function HomePage() {
 
       {/* Education Hub */}
       <section className="bg-white">
-        <img
+        <Image
           src="/images/education-hub.png"
           alt="Lembucherra Education Hub — Holy Cross, Rajarshi, Agriculture, Fisheries, ICFAI, Central Sanskrit University"
-          className="w-full block"
+          width={1400} height={900}
+          className="w-full h-auto block"
         />
       </section>
 
@@ -105,10 +110,11 @@ export default async function HomePage() {
       <section className="py-16 px-4 bg-[#F8F5EF]">
         <div className="max-w-7xl mx-auto">
           <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-200">
-            <img
+            <Image
               src="/images/tuda-master-plan.png"
               alt="TUDA Laxmilunga Special Planning Area — 3D View of Draft Master Plan — Project: Agartala Satellite Town"
-              className="w-full"
+              width={1400} height={900}
+              className="w-full h-auto"
             />
           </div>
         </div>
