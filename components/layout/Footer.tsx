@@ -58,7 +58,11 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-500">
-          <p>© 2024 Propity Realty. All rights reserved.</p>
+          <p>© 2025 Propity Realty. All rights reserved.</p>
+          <div className="flex gap-4">
+            <Link href="/privacy-policy" className="hover:text-[#C9A84C] transition-colors">Privacy Policy</Link>
+            <Link href="/about" className="hover:text-[#C9A84C] transition-colors">About Us</Link>
+          </div>
         </div>
       </div>
     </footer>
