@@ -10,7 +10,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ availableCount }: HeroSectionProps) {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden md:pt-14">
       {/* Background — real aerial photo of the land */}
       <div className="absolute inset-0">
         <img
@@ -33,7 +33,7 @@ export default function HeroSection({ availableCount }: HeroSectionProps) {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-5xl mx-auto md:pt-14">
+      <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
