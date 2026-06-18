@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 import { bookingSchema } from '@/lib/validations'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 export async function POST(req: NextRequest) {
+  if (!supabaseUrl || !supabaseKey) {
+    return NextResponse.json({ error: 'Database not configured. Please call us at +91 81329 53235 to book.' }, { status: 503 })
+  }
+
   try {
+    const { createClient } = await import('@supabase/supabase-js')
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
     const body = await req.json()
     const data = bookingSchema.parse(body)
 
-    // Check plot is still available
     const { data: plot, error: plotError } = await supabase
       .from('plots')
       .select('id, status, ganda_size')
@@ -26,7 +29,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'This plot is no longer available' }, { status: 409 })
     }
 
-    // Insert booking
     const { error: bookingError } = await supabase.from('bookings').insert({
       plot_id: plot.id,
       plot_number: data.plot_number,
@@ -41,7 +43,6 @@ export async function POST(req: NextRequest) {
 
     if (bookingError) throw bookingError
 
-    // Update plot status to booked
     const { error: updateError } = await supabase
       .from('plots')
       .update({ status: 'booked' })

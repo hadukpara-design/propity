@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 export async function GET() {
+  if (!supabaseUrl || !supabaseKey) {
+    return NextResponse.json([])
+  }
+
+  const { createClient } = await import('@supabase/supabase-js')
+  const supabase = createClient(supabaseUrl, supabaseKey)
+
   const { data, error } = await supabase
     .from('plots')
     .select('*')
@@ -17,6 +21,13 @@ export async function GET() {
 }
 
 export async function PATCH(req: Request) {
+  if (!supabaseUrl || !supabaseKey) {
+    return NextResponse.json({ error: 'Database not configured' }, { status: 503 })
+  }
+
+  const { createClient } = await import('@supabase/supabase-js')
+  const supabase = createClient(supabaseUrl, supabaseKey)
+
   const body = await req.json()
   const { id, status } = body
 
