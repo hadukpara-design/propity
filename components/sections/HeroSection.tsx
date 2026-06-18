@@ -10,7 +10,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ availableCount }: HeroSectionProps) {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden md:pt-14">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-12 md:pt-14">
       {/* Background — real aerial photo of the land */}
       <div className="absolute inset-0">
         <img
