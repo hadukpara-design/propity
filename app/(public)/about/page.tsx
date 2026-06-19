@@ -31,7 +31,6 @@ export default function AboutPage() {
               { label: 'Total Area', value: '17 Kani (2,93,760 Sq. Feet)' },
               { label: 'Total Plots', value: '63 Residential Plots' },
               { label: 'Plot Sizes', value: '2.77 Ganda to 20 Ganda' },
-              { label: 'Booking Amount', value: '₹1,00,000 (Token)' },
               { label: 'Internal Road Width', value: '20-Foot Wide Internal Roads' },
             ].map(({ label, value }) => (
               <div key={label} className="flex flex-col">
@@ -90,7 +89,7 @@ export default function AboutPage() {
             href="/book"
             className="inline-block bg-[#C9A84C] text-[#1A1A2E] font-bold px-10 py-4 rounded-xl text-lg hover:bg-[#E8C96A] transition-colors"
           >
-            Book Your Plot — ₹1,00,000
+            Book Your Plot
           </Link>
           <p className="mt-3 text-[#5C5C72] text-sm">Or call us: <a href="tel:8132953235" className="text-[#1B4332] font-semibold">+91 81329 53235</a></p>
         </div>

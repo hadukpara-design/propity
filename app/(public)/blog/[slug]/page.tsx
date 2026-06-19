@@ -101,7 +101,7 @@ export default async function BlogPostPage({ params }: Props) {
             Interested in Buying a Plot?
           </h3>
           <p className="text-white/70 mb-6 text-sm">
-            17 Kani Township · 63 Residential Plots · Book with ₹1,00,000
+            17 Kani Township · 63 Residential Plots · Laxmilunga, Agartala
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link

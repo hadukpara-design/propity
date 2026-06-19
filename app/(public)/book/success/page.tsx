@@ -38,11 +38,7 @@ export default async function BookSuccessPage({
               <p className="font-bold text-[#C9A84C] text-xl">#{plot}</p>
             </div>
           </div>
-          <div className="border-t border-white/10 pt-4 flex justify-between">
-            <div>
-              <p className="text-white/60 text-xs mb-1">Booking Amount</p>
-              <p className="font-bold text-[#C9A84C] text-2xl">₹1,00,000</p>
-            </div>
+          <div className="border-t border-white/10 pt-4 flex justify-end">
             <div className="text-right">
               <p className="text-white/60 text-xs mb-1">Status</p>
               <span className="bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded-full">CONFIRMED</span>

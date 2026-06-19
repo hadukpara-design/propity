@@ -77,8 +77,6 @@ export default function BookingForm({ availablePlots }: BookingFormProps) {
               <p className="text-white/60 text-sm">{selectedPlot.ganda_size} Ganda</p>
             </div>
             <div className="text-right">
-              <p className="text-xs text-white/60 mb-1">Booking Amount</p>
-              <p className="text-xl font-bold text-[#C9A84C]">₹1,00,000</p>
             </div>
           </div>
         </div>
@@ -192,7 +190,7 @@ export default function BookingForm({ availablePlots }: BookingFormProps) {
       <div className="bg-[#C9A84C]/10 border border-[#C9A84C]/30 rounded-lg p-3 flex items-start gap-2">
         <IndianRupee className="w-4 h-4 text-[#C9A84C] mt-0.5 shrink-0" />
         <p className="text-xs text-[#5C5C72]">
-          Booking amount: <strong>₹1,00,000</strong>. Our team will contact you within 2 hours to guide you through the payment process.
+          Our team will contact you within 2 hours to guide you through the payment process.
         </p>
       </div>
 

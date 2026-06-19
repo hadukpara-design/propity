@@ -37,7 +37,6 @@ export default function Footer() {
             <ul className="space-y-2 text-sm text-gray-400">
               <li>17 Kani Township</li>
               <li>63 Residential Plots</li>
-              <li>Book at ₹1,00,000</li>
             </ul>
           </div>
 

@@ -50,7 +50,6 @@ export default async function PlotDetailPage({ params }: { params: Promise<{ id:
                 { label: 'Size', value: `${plot.ganda_size} Ganda`, icon: Home },
                 { label: 'Area', value: `${sqft.toLocaleString()} sq ft`, icon: Home },
                 { label: 'Price', value: `₹${plot.price_lakhs} Lakhs`, icon: Home },
-                { label: 'Booking', value: '₹1,00,000', icon: Home },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-[#F8F5EF] rounded-xl p-4">
                   <p className="text-xs text-[#5C5C72] mb-1">{label}</p>
