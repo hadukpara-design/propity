@@ -24,7 +24,7 @@ export default function LocationPage() {
 
         {/* Google Maps embed — exact pinned location */}
         <Link
-          href="https://maps.app.goo.gl/4PNT8og4eDVAjmQ76"
+          href="https://www.google.com/maps?q=23.91194,91.28083"
           target="_blank"
           rel="noopener noreferrer"
           className="block rounded-2xl overflow-hidden shadow-lg border-2 border-[#C9A84C] mb-2 h-96 relative group"
