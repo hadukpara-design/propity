@@ -1,4 +1,5 @@
-import { MapPin, Phone, Clock, Navigation } from 'lucide-react'
+import { MapPin, Phone, Clock, Navigation, ExternalLink } from 'lucide-react'
+import Link from 'next/link'
 
 export default function LocationPage() {
   return (
@@ -22,7 +23,7 @@ export default function LocationPage() {
         </div>
 
         {/* Google Maps embed */}
-        <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-200 mb-10 h-80">
+        <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-200 mb-4 h-80">
           <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3665.8!2d91.2798!3d23.9121!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sLembucherra%2C%20Agartala%2C%20Tripura!5e0!3m2!1sen!2sin!4v1"
             width="100%"
@@ -33,6 +34,20 @@ export default function LocationPage() {
             referrerPolicy="no-referrer-when-downgrade"
             title="Propity Realty Location - Laxmilunga, Agartala"
           />
+        </div>
+
+        {/* Open exact location button */}
+        <div className="flex justify-center mb-10">
+          <Link
+            href="https://maps.app.goo.gl/4PNT8og4eDVAjmQ76"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-[#1B4332] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#145228] transition-colors shadow-md"
+          >
+            <MapPin className="w-5 h-5 text-[#C9A84C]" />
+            Open Exact Location in Google Maps
+            <ExternalLink className="w-4 h-4 opacity-70" />
+          </Link>
         </div>
 
         {/* Info cards */}
@@ -51,7 +66,7 @@ export default function LocationPage() {
             {
               icon: Phone,
               title: 'Contact',
-              content: '+91 81329 53235\ninfo@propity.in',
+              content: '+91 81329 53235\nhadukpara@gmail.com',
               isPhone: true,
             },
             {
