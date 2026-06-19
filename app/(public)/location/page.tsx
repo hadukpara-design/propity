@@ -22,33 +22,31 @@ export default function LocationPage() {
           />
         </div>
 
-        {/* Google Maps embed */}
-        <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-200 mb-4 h-80">
+        {/* Google Maps embed — exact pinned location */}
+        <Link
+          href="https://maps.app.goo.gl/4PNT8og4eDVAjmQ76"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block rounded-2xl overflow-hidden shadow-lg border-2 border-[#C9A84C] mb-2 h-96 relative group"
+        >
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3665.8!2d91.2798!3d23.9121!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sLembucherra%2C%20Agartala%2C%20Tripura!5e0!3m2!1sen!2sin!4v1"
+            src="https://maps.google.com/maps?q=23.91194,91.28083&hl=en&z=17&output=embed"
             width="100%"
             height="100%"
-            style={{ border: 0 }}
-            allowFullScreen
+            style={{ border: 0, pointerEvents: 'none' }}
             loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            title="Propity Realty Location - Laxmilunga, Agartala"
+            title="17 Kani Township Exact Location - Laxmilunga, Agartala"
           />
-        </div>
-
-        {/* Open exact location button */}
-        <div className="flex justify-center mb-10">
-          <Link
-            href="https://maps.app.goo.gl/4PNT8og4eDVAjmQ76"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#1B4332] text-white font-bold px-6 py-3 rounded-xl hover:bg-[#145228] transition-colors shadow-md"
-          >
-            <MapPin className="w-5 h-5 text-[#C9A84C]" />
-            Open Exact Location in Google Maps
-            <ExternalLink className="w-4 h-4 opacity-70" />
-          </Link>
-        </div>
+          {/* Click overlay */}
+          <div className="absolute inset-0 flex items-end justify-center pb-6 bg-transparent group-hover:bg-black/10 transition-colors">
+            <span className="inline-flex items-center gap-2 bg-[#1B4332] text-white font-bold px-5 py-2.5 rounded-xl shadow-lg text-sm">
+              <MapPin className="w-4 h-4 text-[#C9A84C]" />
+              Open in Google Maps
+              <ExternalLink className="w-4 h-4 opacity-70" />
+            </span>
+          </div>
+        </Link>
+        <p className="text-center text-xs text-[#5C5C72] mb-10">📍 Click the map to open exact location</p>
 
         {/* Info cards */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
