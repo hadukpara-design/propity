@@ -45,8 +45,7 @@ export default function PlotCard({ plot }: PlotCardProps) {
       <p className="text-sm font-semibold text-[#1A1A2E]">{plot.ganda_size} Ganda</p>
       <p className="text-xs text-[#5C5C72]">≈ {sqft.toLocaleString()} sq ft</p>
 
-      <div className="mt-3 flex items-center justify-between">
-        <span className="text-sm font-bold text-[#C9A84C]">₹{plot.price_lakhs} L</span>
+      <div className="mt-3 flex items-center justify-end">
         {plot.status === 'available' && (
           <span className="text-xs text-[#1B4332] font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
             Book <ArrowRight className="w-3 h-3" />

@@ -40,6 +40,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable} ${montserrat.variable}`}>
       <head>
+        <link rel="icon" href="/favicon.png" type="image/png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        <meta name="google-site-verification" content="lkgtaTyDaWDZCLIuJNKa7yx_fWHRZhdoAUzofqvl2ug" />
         {/* Meta Pixel */}
         <script dangerouslySetInnerHTML={{ __html: `
           !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
