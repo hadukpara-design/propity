@@ -80,7 +80,7 @@ const items = [
     id: 10,
     src: '/images/book-cta.png',
     label: 'Book Your Dream Plot Today',
-    desc: 'Only ₹1,00,000 to secure your plot. Call & WhatsApp: 8132953235. Prime Location. Wide Roads. Modern Infrastructure.',
+    desc: 'Only ₹2,00,000 to secure your plot. Call & WhatsApp: 8132953235. Prime Location. Wide Roads. Modern Infrastructure.',
     category: 'Info',
     type: 'image',
   },
