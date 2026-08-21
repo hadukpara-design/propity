@@ -43,6 +43,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="icon" href="/favicon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/favicon.png" />
         <meta name="google-site-verification" content="lkgtaTyDaWDZCLIuJNKa7yx_fWHRZhdoAUzofqvl2ug" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8131635946537155"
+          crossOrigin="anonymous"
+        />
         {/* Meta Pixel */}
         <script dangerouslySetInnerHTML={{ __html: `
           !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
