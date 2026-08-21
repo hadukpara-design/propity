@@ -190,7 +190,7 @@ export default function BookingForm({ availablePlots }: BookingFormProps) {
       <div className="bg-[#C9A84C]/10 border border-[#C9A84C]/30 rounded-lg p-3 flex items-start gap-2">
         <IndianRupee className="w-4 h-4 text-[#C9A84C] mt-0.5 shrink-0" />
         <p className="text-xs text-[#5C5C72]">
-          Our team will contact you within 2 hours to guide you through the payment process.
+          Our team will call you to guide you through the payment process — no payment is collected on this form.
         </p>
       </div>
 
