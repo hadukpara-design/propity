@@ -1,5 +1,12 @@
 import { MapPin, Phone, Clock, Navigation, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Location & Directions | 17 Kani Township, Laxmilunga, Agartala',
+  description: '12 minutes from Agartala, 13 minutes from the airport, 5 minutes from Lembucherra — beside the Western Bypass and Taj Vivanta. Get directions to the site.',
+  keywords: ['Laxmilunga location', 'directions Agartala plots', '17 Kani township address', 'Western Bypass Agartala land'],
+}
 
 export default function LocationPage() {
   return (

@@ -1,5 +1,12 @@
 import { CheckCircle2, MapPin, Trees, Building2 } from 'lucide-react'
 import Link from 'next/link'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'About 17 Kani Residential Township | Propity Realty',
+  description: 'A thoughtfully planned 2,93,760 sq. ft. residential community in Laxmilunga Special Planning Area, Agartala — 63 plots, wide roads, and modern infrastructure.',
+  keywords: ['17 Kani township Agartala', 'about Propity Realty', 'Laxmilunga Special Planning Area', 'residential community Tripura'],
+}
 
 export default function AboutPage() {
   return (

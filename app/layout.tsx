@@ -25,11 +25,11 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: 'Propity Realty | 17 Kani Residential Plots in Laxmilunga, Agartala',
   description:
-    '63 residential plots for sale in Laxmilunga, Agartala, Tripura. 12 min from city, near Taj Vivanta & Upcoming IPL Stadium. Book with ₹1 Lakh token amount.',
+    '63 residential plots for sale in Laxmilunga, Agartala, Tripura. 12 min from city, near Taj Vivanta & Upcoming IPL Stadium. Book with ₹2,00,000 token amount.',
   keywords: ['plots for sale Agartala', 'residential land Tripura', 'Laxmilunga plots', '17 Kani township', 'TUDA approved plots'],
   openGraph: {
     title: 'Propity Realty | 17 Kani Residential Township',
-    description: '63 residential plots in Laxmilunga, Agartala. Book with ₹1 Lakh.',
+    description: '63 residential plots in Laxmilunga, Agartala. Book with ₹2,00,000 token amount.',
     type: 'website',
     locale: 'en_IN',
   },

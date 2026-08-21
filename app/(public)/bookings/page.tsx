@@ -2,6 +2,13 @@ import { createClient, isSupabaseConfigured } from '@/lib/supabase/server'
 import BookingCard from '@/components/features/BookingCard'
 import ProgressBar from '@/components/ui/ProgressBar'
 import type { PublicBooking } from '@/types'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Township Bookings | 17 Kani Residential Plots, Agartala',
+  description: 'See live booking status for the 17 Kani Township in Laxmilunga, Agartala — track how many of the 63 residential plots are still available.',
+  keywords: ['plot booking status Agartala', '17 Kani township availability', 'residential plots booked Laxmilunga'],
+}
 
 export const revalidate = 30
 
