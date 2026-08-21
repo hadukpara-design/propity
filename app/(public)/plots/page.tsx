@@ -6,7 +6,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: '63 Residential Plots for Sale in Laxmilunga, Agartala | Propity Realty',
   description: 'Browse all 63 residential plots in the 17 Kani Township, Laxmilunga, Agartala. Live availability, sizes, and pricing near Taj Vivanta & the Western Bypass.',
-  keywords: ['plots for sale Laxmilunga', 'residential plots Agartala', '17 Kani plot list', 'buy land Agartala Tripura'],
+  keywords: ['plots for sale Laxmilunga', 'residential plots Agartala', '17 Kani plot list', 'buy land Agartala Tripura', 'plots in Laxmilunga', 'residential plots Laxmilunga Agartala', 'land near Taj Vivanta Agartala'],
 }
 
 export const revalidate = 30
