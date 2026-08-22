@@ -52,14 +52,14 @@ export default function PlotCard({ plot }: PlotCardProps) {
           </span>
         ) : (
           <span className="text-xs text-[#5C5C72] font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
-            View bookings <ArrowRight className="w-3 h-3" />
+            View details <ArrowRight className="w-3 h-3" />
           </span>
         )}
       </div>
     </div>
   )
 
-  const href = plot.status === 'available' ? `/book?plot=${plot.plot_number}` : '/bookings'
+  const href = plot.status === 'available' ? `/book?plot=${plot.plot_number}` : `/plots/${plot.plot_number}`
 
   return (
     <Link href={href} className="block">

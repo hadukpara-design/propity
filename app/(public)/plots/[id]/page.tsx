@@ -11,7 +11,7 @@ export default async function PlotDetailPage({ params }: { params: Promise<{ id:
   const { data: plot } = await supabase
     .from('plots')
     .select('*')
-    .eq('id', parseInt(id))
+    .eq('plot_number', parseInt(id))
     .single()
 
   if (!plot) notFound()

@@ -1,10 +1,13 @@
+import Link from 'next/link'
 import { MapPin, CheckCircle2 } from 'lucide-react'
 import { anonymizeName, formatDate } from '@/lib/utils'
 import type { PublicBooking } from '@/types'
 
 export default function BookingCard({ booking }: { booking: PublicBooking }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-start gap-3 hover:shadow-md transition-shadow">
+    <Link
+      href={`/plots/${booking.plot_number}`}
+      className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-start gap-3 hover:shadow-md transition-shadow">
       <div className="flex-shrink-0 w-9 h-9 rounded-full bg-emerald-100 flex items-center justify-center">
         <CheckCircle2 className="w-5 h-5 text-emerald-600" />
       </div>
@@ -28,6 +31,6 @@ export default function BookingCard({ booking }: { booking: PublicBooking }) {
           <span>{formatDate(booking.created_at)}</span>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
