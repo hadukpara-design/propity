@@ -15,11 +15,11 @@ const statusConfig = {
     badge: 'available' as const,
   },
   booked: {
-    card: 'bg-gray-50 border-gray-200 opacity-60 cursor-not-allowed',
+    card: 'bg-gray-50 border-gray-200 opacity-60 hover:opacity-80 cursor-pointer',
     badge: 'booked' as const,
   },
   reserved: {
-    card: 'bg-amber-50 border-amber-200 opacity-80 cursor-default',
+    card: 'bg-amber-50 border-amber-200 opacity-80 hover:opacity-100 cursor-pointer',
     badge: 'reserved' as const,
   },
 }
@@ -46,19 +46,23 @@ export default function PlotCard({ plot }: PlotCardProps) {
       <p className="text-xs text-[#5C5C72]">≈ {sqft.toLocaleString()} sq ft</p>
 
       <div className="mt-3 flex items-center justify-end">
-        {plot.status === 'available' && (
+        {plot.status === 'available' ? (
           <span className="text-xs text-[#1B4332] font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
             Book <ArrowRight className="w-3 h-3" />
+          </span>
+        ) : (
+          <span className="text-xs text-[#5C5C72] font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+            View bookings <ArrowRight className="w-3 h-3" />
           </span>
         )}
       </div>
     </div>
   )
 
-  if (plot.status !== 'available') return card
+  const href = plot.status === 'available' ? `/book?plot=${plot.plot_number}` : '/bookings'
 
   return (
-    <Link href={`/book?plot=${plot.plot_number}`} className="block">
+    <Link href={href} className="block">
       {card}
     </Link>
   )
