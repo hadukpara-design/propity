@@ -8,7 +8,7 @@ import { toast } from 'sonner'
 import { bookingSchema, type BookingFormData } from '@/lib/validations'
 import type { Plot } from '@/types'
 import Button from '@/components/ui/Button'
-import { IndianRupee, User, Phone, Mail, MapPin, MessageSquare, Home } from 'lucide-react'
+import { IndianRupee, User, Phone, Mail, MapPin, MessageSquare, Home, ChevronDown } from 'lucide-react'
 
 interface BookingFormProps {
   availablePlots: Plot[]
@@ -149,10 +149,10 @@ export default function BookingForm({ availablePlots }: BookingFormProps) {
           Select Plot <span className="text-red-500">*</span>
         </label>
         <div className="relative">
-          <Home className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+          <Home className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
           <select
             {...register('plot_number', { valueAsNumber: true })}
-            className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-[#1B4332] focus:ring-1 focus:ring-[#1B4332] text-sm bg-white"
+            className="w-full appearance-none pl-10 pr-10 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-[#1B4332] focus:ring-1 focus:ring-[#1B4332] text-sm bg-white"
           >
             <option value="">Choose a plot (1–63)...</option>
             {availablePlots.length > 0
@@ -168,6 +168,7 @@ export default function BookingForm({ availablePlots }: BookingFormProps) {
                 ))
             }
           </select>
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
         </div>
         {errors.plot_number && <p className="text-red-500 text-xs mt-1">{errors.plot_number.message}</p>}
       </div>
