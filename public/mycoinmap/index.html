@@ -251,6 +251,25 @@ td .sub{font-size:12px;color:var(--ink-3)}
 .legend{display:flex;gap:14px;font-size:12px;color:var(--ink-2)}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:middle}
 
+/* projects / home */
+.proj-back{display:flex;align-items:center;gap:7px;width:100%;padding:8px 12px;margin:-2px 0 4px;border:0;background:transparent;color:var(--side-ink-2);font-weight:700;font-size:12.5px;border-radius:8px;text-align:left}
+.proj-back:hover{background:var(--side-2);color:#fff}
+.proj-back svg{width:14px;height:14px;flex:none}
+.projects{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.proj-card{position:relative;background:var(--surface);border:1px solid var(--line-2);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);cursor:pointer;display:flex;flex-direction:column;gap:12px;border-top:4px solid var(--accent);transition:transform .12s}
+.proj-card:hover{transform:translateY(-2px)}
+.proj-card .name{font-family:var(--serif);font-size:22px;line-height:1.15;text-wrap:balance}
+.proj-card .loc{font-size:12px;color:var(--ink-3);display:flex;align-items:center;gap:5px;margin-top:2px}
+.proj-card .loc svg{width:12px;height:12px;flex:none}
+.proj-card .stats{display:flex;gap:16px;margin-top:auto;padding-top:12px;border-top:1px solid var(--line-2)}
+.proj-card .stat{display:flex;flex-direction:column;gap:2px}
+.proj-card .stat b{font-family:var(--serif);font-size:20px;line-height:1}
+.proj-card .stat span{font-size:10px;color:var(--ink-3);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.proj-edit{position:absolute;top:12px;right:12px}
+.proj-new{border:2px dashed var(--line);background:var(--surface-2);border-radius:var(--radius);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:18px;color:var(--ink-3);font-weight:700;cursor:pointer;min-height:150px}
+.proj-new svg{width:22px;height:22px}
+.proj-new:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+
 /* team */
 .team{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
 .member{background:var(--surface);border:1px solid var(--line-2);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
@@ -364,10 +383,11 @@ td .sub{font-size:12px;color:var(--ink-3)}
 
 <div class="shell">
   <aside class="side">
-    <div class="brand">
+    <button class="brand" id="brandBtn" type="button" style="border:0;background:transparent;cursor:pointer;text-align:left;width:100%;font:inherit;color:inherit">
       <div class="brand-mark">M</div>
-      <div><div class="brand-name">MyCoinMap</div><div class="brand-sub">Land &amp; lead ledger</div></div>
-    </div>
+      <div><div class="brand-name">MyCoinMap</div><div class="brand-sub" id="brandSub">Land &amp; lead ledger</div></div>
+    </button>
+    <button class="proj-back" id="backHomeBtn" type="button" hidden><span id="backIco"></span><span>All projects</span></button>
     <nav class="nav" id="nav"></nav>
     <div class="side-foot">
       <div class="sync" id="sync"><span class="dot local"></span><span>Connecting…</span></div>
@@ -379,6 +399,7 @@ td .sub{font-size:12px;color:var(--ink-3)}
       <div><h1 id="viewTitle">Today</h1><div class="sub" id="viewSub"></div></div>
       <div class="grow"></div>
       <label class="search"><span id="searchIco"></span><input id="search" type="search" placeholder="Search name, phone, plot…" autocomplete="off"></label>
+      <button class="btn primary" id="newProjectBtn" type="button" hidden><span id="plusIco2"></span>New project</button>
       <button class="btn primary" id="addLeadBtn" type="button"><span id="plusIco"></span>Add lead</button>
     </header>
     <section class="view" id="view"></section>
@@ -441,7 +462,8 @@ const I = {
   move:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
   spark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></svg>',
   download:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></svg>',
-  rupee:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12M6 9h12M6 4c6 0 8 2 8 5s-2 5-8 5l8 7"/></svg>'
+  rupee:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12M6 9h12M6 4c6 0 8 2 8 5s-2 5-8 5l8 7"/></svg>',
+  arrowleft:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>'
 };
 
 /* ===================== domain ===================== */
@@ -476,9 +498,9 @@ const ACTS = {
 };
 
 /* ===================== state ===================== */
-const state = { leads:[], plots:[], team:[], money:[], partners:[], invites:[], prefs:{ areaUnit:'ganda' }, ready:false, mode:'db' };
+const state = { projects:[], leads:[], plots:[], team:[], money:[], partners:[], invites:[], prefs:{ areaUnit:'ganda' }, ready:false, mode:'db' };
 let downloads = null, sampler = null, sampleCaps = null, samplerBlocked = '';
-const ui = { view:'today', q:'', openLead:null, action:null, filterStage:'', filterWho:'', visitsTab:'upcoming', plotSite:'', moneyWho:'', moneyKind:'', moneyMonth:'' };
+const ui = { projectId:null, view:'home', q:'', openLead:null, action:null, filterStage:'', filterWho:'', visitsTab:'upcoming', plotSite:'', moneyWho:'', moneyKind:'', moneyMonth:'' };
 let ME = null;
 const leadById = id => state.leads.find(l => l.id === id);
 const plotById = id => state.plots.find(p => p.id === id);
@@ -494,6 +516,15 @@ const fmtSqft = sq => `${fmtNum(sq, 0)} sq ft`;
 const fmtArea = p => unitKey() === 'sqft' ? fmtSqft(p.sizeSqft) : `${fmtNum(areaLocal(p))} ${unitLabel()}`;
 const fmtAreaBoth = p => unitKey() === 'sqft' ? fmtSqft(p.sizeSqft) : `${fmtArea(p)} · ${fmtSqft(p.sizeSqft)}`;
 const ratePerUnit = p => (Number(p.pricePerSqft)||0) * unitSqft();
+const currentProject = () => state.projects.find(p => p.id === ui.projectId) || null;
+const leadsOf = pid => state.leads.filter(l => l.projectId === pid);
+const plotsOf = pid => state.plots.filter(p => p.projectId === pid);
+const moneyOf = pid => state.money.filter(m => m.projectId === pid);
+const projLeads = () => ui.projectId ? leadsOf(ui.projectId) : state.leads;
+const projPlots = () => ui.projectId ? plotsOf(ui.projectId) : state.plots;
+const projMoney = () => ui.projectId ? moneyOf(ui.projectId) : state.money;
+function openProject(id){ ui.projectId = id; ui.view = 'today'; ui.q = ''; const s = $('#search'); if (s) s.value = ''; ui.openLead = null; $('#overlay').innerHTML = ''; render(); window.scrollTo(0,0); }
+function goHome(){ ui.projectId = null; ui.view = 'home'; ui.q = ''; const s = $('#search'); if (s) s.value = ''; ui.openLead = null; $('#overlay').innerHTML = ''; render(); window.scrollTo(0,0); }
 
 /* ===================== store ===================== */
 const SB_URL = 'https://ddpzkrytljgjathmzhak.supabase.co';
@@ -502,12 +533,14 @@ const sb = window.supabase.createClient(SB_URL, SB_KEY);
 let SESSION = null, PARTNER = null;
 const GANDA = 864;
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : '';
-const plotFromRow = r => { const sq = Number(r.area_sqft) || Math.round(Number(r.ganda_size) * GANDA); return { id:String(r.id), number:String(r.plot_number), site:r.site || '17 Kani', sizeSqft:sq, areaValue:Number(r.ganda_size) || null, areaUnit:'ganda', pricePerSqft: sq ? Number(r.price_lakhs) * 1e5 / sq : 0, facing:cap(r.facing || ''), status:r.status === 'reserved' ? 'booked' : (r.status || 'available'), rawStatus:r.status, leadId:r.lead_id || '', widthFt:r.width_ft ? Number(r.width_ft) : null, depthFt:r.depth_ft ? Number(r.depth_ft) : null, note:r.notes || '' }; };
-const rowFromPlot = p => { const n = parseInt(String(p.number).replace(/\D/g, ''), 10); return { plot_number:n, ganda_size:+(p.areaUnit === 'ganda' && p.areaValue ? Number(p.areaValue) : p.sizeSqft / GANDA).toFixed(2), area_sqft:Math.round(p.sizeSqft), status:p.status, price_lakhs:+(((Number(p.pricePerSqft) || 0) * p.sizeSqft) / 1e5).toFixed(2), facing:(p.facing || '').toLowerCase() || null, notes:p.note || null, lead_id:p.leadId || null, site:p.site || '17 Kani', width_ft:p.widthFt || null, depth_ft:p.depthFt || null, updated_at:new Date().toISOString() }; };
-const leadFromRow = r => ({ id:r.id, name:r.name, phone:r.phone, source:r.source || '', stage:r.stage, interest:r.interest || '', budget:Number(r.budget) || 0, assignedTo:r.assigned_to || '', notes:r.notes || '', nextFollowUp:r.next_follow_up || '', visitAt:r.visit_at || '', plotId:r.plot_id ? String(r.plot_id) : '', tokenAmount:Number(r.token_amount) || 0, dealAmount:Number(r.deal_amount) || 0, activities:Array.isArray(r.activities) ? r.activities : [], sample:!!r.sample, createdAt:r.created_at, updatedAt:r.updated_at });
-const rowFromLead = l => ({ id:l.id, name:l.name, phone:l.phone, source:l.source || null, stage:l.stage, interest:l.interest || null, budget:l.budget || 0, assigned_to:l.assignedTo || null, notes:l.notes || null, next_follow_up:l.nextFollowUp || null, visit_at:l.visitAt || null, plot_id:l.plotId ? parseInt(l.plotId, 10) : null, token_amount:l.tokenAmount || 0, deal_amount:l.dealAmount || 0, activities:l.activities || [], sample:!!l.sample, created_at:l.createdAt || new Date().toISOString(), updated_at:l.updatedAt || new Date().toISOString() });
-const moneyFromRow = r => ({ id:r.id, kind:r.kind, amount:Number(r.amount) || 0, paidBy:r.paid_by || '', category:r.category || '', on:r.on_date ? r.on_date + 'T12:00:00' : r.created_at, note:r.note || '', leadId:r.lead_id || '', plotId:r.plot_id ? String(r.plot_id) : '', by:r.logged_by || '', createdAt:r.created_at, sample:!!r.sample });
-const rowFromMoney = m => ({ id:m.id, kind:m.kind, amount:m.amount, paid_by:m.paidBy, category:m.category || null, on_date:dayKey(m.on), note:m.note || null, lead_id:m.leadId || null, plot_id:m.plotId ? parseInt(m.plotId, 10) : null, logged_by:m.by || null, sample:!!m.sample });
+const plotFromRow = r => { const sq = Number(r.area_sqft) || Math.round(Number(r.ganda_size) * GANDA); return { id:String(r.id), projectId:r.project_id || '', number:String(r.plot_number), site:r.site || '17 Kani', sizeSqft:sq, areaValue:Number(r.ganda_size) || null, areaUnit:'ganda', pricePerSqft: sq ? Number(r.price_lakhs) * 1e5 / sq : 0, facing:cap(r.facing || ''), status:r.status === 'reserved' ? 'booked' : (r.status || 'available'), rawStatus:r.status, leadId:r.lead_id || '', widthFt:r.width_ft ? Number(r.width_ft) : null, depthFt:r.depth_ft ? Number(r.depth_ft) : null, note:r.notes || '' }; };
+const rowFromPlot = p => { const n = parseInt(String(p.number).replace(/\D/g, ''), 10); return { plot_number:n, project_id:p.projectId || null, ganda_size:+(p.areaUnit === 'ganda' && p.areaValue ? Number(p.areaValue) : p.sizeSqft / GANDA).toFixed(2), area_sqft:Math.round(p.sizeSqft), status:p.status, price_lakhs:+(((Number(p.pricePerSqft) || 0) * p.sizeSqft) / 1e5).toFixed(2), facing:(p.facing || '').toLowerCase() || null, notes:p.note || null, lead_id:p.leadId || null, site:p.site || '17 Kani', width_ft:p.widthFt || null, depth_ft:p.depthFt || null, updated_at:new Date().toISOString() }; };
+const leadFromRow = r => ({ id:r.id, projectId:r.project_id || '', name:r.name, phone:r.phone, source:r.source || '', stage:r.stage, interest:r.interest || '', budget:Number(r.budget) || 0, assignedTo:r.assigned_to || '', notes:r.notes || '', nextFollowUp:r.next_follow_up || '', visitAt:r.visit_at || '', plotId:r.plot_id ? String(r.plot_id) : '', tokenAmount:Number(r.token_amount) || 0, dealAmount:Number(r.deal_amount) || 0, activities:Array.isArray(r.activities) ? r.activities : [], sample:!!r.sample, createdAt:r.created_at, updatedAt:r.updated_at });
+const rowFromLead = l => ({ id:l.id, project_id:l.projectId || null, name:l.name, phone:l.phone, source:l.source || null, stage:l.stage, interest:l.interest || null, budget:l.budget || 0, assigned_to:l.assignedTo || null, notes:l.notes || null, next_follow_up:l.nextFollowUp || null, visit_at:l.visitAt || null, plot_id:l.plotId ? parseInt(l.plotId, 10) : null, token_amount:l.tokenAmount || 0, deal_amount:l.dealAmount || 0, activities:l.activities || [], sample:!!l.sample, created_at:l.createdAt || new Date().toISOString(), updated_at:l.updatedAt || new Date().toISOString() });
+const moneyFromRow = r => ({ id:r.id, projectId:r.project_id || '', kind:r.kind, amount:Number(r.amount) || 0, paidBy:r.paid_by || '', category:r.category || '', on:r.on_date ? r.on_date + 'T12:00:00' : r.created_at, note:r.note || '', leadId:r.lead_id || '', plotId:r.plot_id ? String(r.plot_id) : '', by:r.logged_by || '', createdAt:r.created_at, sample:!!r.sample });
+const rowFromMoney = m => ({ id:m.id, project_id:m.projectId || null, kind:m.kind, amount:m.amount, paid_by:m.paidBy, category:m.category || null, on_date:dayKey(m.on), note:m.note || null, lead_id:m.leadId || null, plot_id:m.plotId ? parseInt(m.plotId, 10) : null, logged_by:m.by || null, sample:!!m.sample });
+const projectFromRow = r => ({ id:r.id, name:r.name, location:r.location||'', notes:r.notes||'', isDefault:!!r.is_default, createdAt:r.created_at });
+const rowFromProject = p => ({ id:p.id, name:p.name, location:p.location||null, notes:p.notes||null });
 
 const Store = {
   async init(){
@@ -522,9 +555,9 @@ const Store = {
   },
   async loadPartner(){ const { data } = await sb.from('crm_partners').select('*').eq('user_id', SESSION.user.id).maybeSingle(); PARTNER = data || null; },
   async loadAll(){
-    const [l, p, m, s, t, i] = await Promise.all([sb.from('crm_leads').select('*'), sb.from('plots').select('*').order('plot_number'), sb.from('crm_money').select('*'), sb.from('crm_settings').select('*'), sb.from('crm_partners').select('*').order('created_at'), sb.from('crm_invites').select('*')]);
-    for (const r of [l, p, m, s, t, i]) if (r.error) dbErr(r.error);
-    state.leads = (l.data || []).map(leadFromRow); state.plots = (p.data || []).map(plotFromRow); state.money = (m.data || []).map(moneyFromRow);
+    const [l, p, m, s, t, i, pr] = await Promise.all([sb.from('crm_leads').select('*'), sb.from('plots').select('*').order('plot_number'), sb.from('crm_money').select('*'), sb.from('crm_settings').select('*'), sb.from('crm_partners').select('*').order('created_at'), sb.from('crm_invites').select('*'), sb.from('crm_projects').select('*').order('created_at')]);
+    for (const r of [l, p, m, s, t, i, pr]) if (r.error) dbErr(r.error);
+    state.leads = (l.data || []).map(leadFromRow); state.plots = (p.data || []).map(plotFromRow); state.money = (m.data || []).map(moneyFromRow); state.projects = (pr.data || []).map(projectFromRow);
     const prefs = (s.data || []).find(x => x.key === 'prefs'); state.prefs = { areaUnit:'ganda', ...(prefs ? prefs.value : {}) };
     state.partners = t.data || []; state.invites = i.data || [];
     state.team = [...new Set([...state.partners.map(x => x.name), ...state.invites.map(x => x.name), ...state.leads.map(x => x.assignedTo), ...state.money.map(x => x.paidBy)].filter(Boolean))];
@@ -550,6 +583,16 @@ const Store = {
   },
   async deleteMoney(id){ state.money = state.money.filter(m => m.id !== id); render(); const { error } = await sb.from('crm_money').delete().eq('id', id); if (error) dbErr(error); },
   async putPrefs(prefs){ state.prefs = { ...state.prefs, ...prefs }; render(); const { error } = await sb.from('crm_settings').upsert({ key:'prefs', value:state.prefs }); if (error) dbErr(error); },
+  async putProject(p){
+    const i = state.projects.findIndex(x => x.id === p.id); if (i >= 0) state.projects[i] = p; else state.projects.push(p);
+    render(); const { error } = await sb.from('crm_projects').upsert(rowFromProject(p)); if (error) dbErr(error);
+  },
+  async deleteProject(id){
+    if (leadsOf(id).length || plotsOf(id).length) { toast('Remove its plots and leads first, then delete the project.'); return false; }
+    state.projects = state.projects.filter(p => p.id !== id); render();
+    const { error } = await sb.from('crm_projects').delete().eq('id', id); if (error) { dbErr(error); return false; }
+    return true;
+  },
   async putTeam(members){ state.team = [...new Set(members)]; render(); },
   async invite(name, email){ const { error } = await sb.from('crm_invites').insert({ name, email:email.toLowerCase(), invited_by:ME }); if (error) return dbErr(error); await this.loadAll(); render(); },
   async removeInvite(email){ const { error } = await sb.from('crm_invites').delete().eq('email', email); if (error) return dbErr(error); await this.loadAll(); render(); },
@@ -580,17 +623,17 @@ function showNotPartner(){
 /* ===================== derived ===================== */
 function allActs(){
   const out = [];
-  for (const l of state.leads) for (const a of (l.activities || [])) out.push({ ...a, lead:l });
+  for (const l of projLeads()) for (const a of (l.activities || [])) out.push({ ...a, lead:l });
   out.sort((a,b) => new Date(b.at) - new Date(a.at));
   return out;
 }
 function isOpen(l){ return OPEN_STAGES.includes(l.stage); }
 function followUpsDue(){
-  return state.leads.filter(l => l.nextFollowUp && isOpen(l) && daysFromToday(l.nextFollowUp) <= 0)
+  return projLeads().filter(l => l.nextFollowUp && isOpen(l) && daysFromToday(l.nextFollowUp) <= 0)
     .sort((a,b) => new Date(a.nextFollowUp) - new Date(b.nextFollowUp));
 }
 function visitsUpcoming(){
-  return state.leads.filter(l => l.visitAt && l.stage === 'visit_scheduled' && daysFromToday(l.visitAt) >= 0)
+  return projLeads().filter(l => l.visitAt && l.stage === 'visit_scheduled' && daysFromToday(l.visitAt) >= 0)
     .sort((a,b) => new Date(a.visitAt) - new Date(b.visitAt));
 }
 function matches(l, q){
@@ -613,7 +656,13 @@ const VIEWS = [
 ];
 function renderNav(){
   const due = followUpsDue().length;
-  $('#nav').innerHTML = VIEWS.map(v => `<button type="button" data-view="${v.id}" class="${ui.view===v.id?'active':''} ${v.mobileHide?'hide-m':''}">${I[v.icon]}<span>${v.label}</span>${v.id==='follow'&&due?`<span class="cnt hot">${due}</span>`:v.id==='leads'?`<span class="cnt">${state.leads.length}</span>`:''}</button>`).join('');
+  const items = ui.projectId ? VIEWS : VIEWS.filter(v => v.id === 'team');
+  $('#nav').innerHTML = items.map(v => `<button type="button" data-view="${v.id}" class="${ui.view===v.id?'active':''} ${v.mobileHide?'hide-m':''}">${I[v.icon]}<span>${v.label}</span>${v.id==='follow'&&due?`<span class="cnt hot">${due}</span>`:v.id==='leads'?`<span class="cnt">${projLeads().length}</span>`:''}</button>`).join('');
+  $('#backHomeBtn').hidden = !ui.projectId;
+  $('#newProjectBtn').hidden = !!ui.projectId;
+  $('#addLeadBtn').hidden = !ui.projectId;
+  $('#brandSub').textContent = currentProject() ? currentProject().name : 'Land & lead ledger';
+  $('#search').placeholder = ui.projectId ? 'Search name, phone, plot…' : 'Search projects…';
 }
 function renderSync(){
   const el = $('#sync');
@@ -622,16 +671,20 @@ function renderSync(){
   $('#meChip').innerHTML = ME ? `<span class="av">${esc(initials(ME))}</span><span><b>${esc(ME)}</b><small>${PARTNER&&PARTNER.role==='owner'?'Owner':'Partner'} · Sign out</small></span>` : `<span class="av">?</span><span><b>Not signed in</b><small>Sign in</small></span>`;
 }
 function render(){
+  if (ui.projectId && !currentProject()) { ui.projectId = null; ui.view = 'home'; }
+  if (!ui.projectId && !['home','team'].includes(ui.view)) ui.view = 'home';
   renderNav(); renderSync();
-  const titles = { today:['Today', fmtDate(now()) + ' · ' + (ME ? `Good ${now().getHours()<12?'morning':now().getHours()<17?'afternoon':'evening'}, ${ME.split(' ')[0]}` : 'Sign in to continue')],
+  const titles = { home:['Projects', ME ? `Good ${now().getHours()<12?'morning':now().getHours()<17?'afternoon':'evening'}, ${ME.split(' ')[0]} · choose a project to open its board` : 'Sign in to continue'],
+    today:[currentProject()?currentProject().name+' · Today':'Today', fmtDate(now()) + ' · ' + (ME ? `Good ${now().getHours()<12?'morning':now().getHours()<17?'afternoon':'evening'}, ${ME.split(' ')[0]}` : 'Sign in to continue')],
     board:['Pipeline','Drag a card to move it to the next stage'], leads:['All leads','Every enquiry, newest activity first'],
     visits:['Site visits','Who is coming to see the land, and when'], follow:['Follow-ups','Calls and messages that are due'],
-    plots:['Plot inventory','Available, booked and sold'], money:['Money','Who paid what, and where it went'], team:['Team','Everyone working this board'] };
+    plots:['Plot inventory','Available, booked and sold'], money:['Money','Who paid what, and where it went'],
+    team:[currentProject()?'Team':'Team · all projects', currentProject()?'Everyone working this board':'Every partner, and totals across every project'] };
   const [t, s] = titles[ui.view] || ['', ''];
   $('#viewTitle').textContent = t; $('#viewSub').textContent = s;
   const v = $('#view');
   if (!state.ready) { v.innerHTML = `<div class="card"><div class="empty"><b>Loading your board…</b></div></div>`; return; }
-  const fn = { today:vToday, board:vBoard, leads:vLeads, visits:vVisits, follow:vFollow, plots:vPlots, money:vMoney, team:vTeam }[ui.view];
+  const fn = { home:vHome, today:vToday, board:vBoard, leads:vLeads, visits:vVisits, follow:vFollow, plots:vPlots, money:vMoney, team:vTeam }[ui.view];
   v.innerHTML = fn();
   if (downloads) $$('#exportBtn,#exportBtn2,#exportMoneyBtn').forEach(b => b.hidden = false);
   if (ui.openLead) renderDrawer();
@@ -646,11 +699,11 @@ function vToday(){
   const visitsUp   = visitsUpcoming();
   const visitedWk  = acts.filter(a => a.type==='visited' && withinDays(a.at,7)).length;
   const due        = followUpsDue(); const overdue = due.filter(l => daysFromToday(l.nextFollowUp) < 0).length;
-  const booked     = state.leads.filter(l => l.stage==='booked');
+  const booked     = projLeads().filter(l => l.stage==='booked');
   const dealsM     = acts.filter(a => a.type==='deal_done' && sameMonth(a.at));
   const dealSum    = dealsM.reduce((s,a) => s + (Number(a.amount)||0), 0);
-  const newWeek    = state.leads.filter(l => withinDays(l.createdAt,7)).length;
-  const funnelMax  = Math.max(1, ...STAGES.filter(s => s.id!=='lost').map(s => state.leads.filter(l => l.stage===s.id).length));
+  const newWeek    = projLeads().filter(l => withinDays(l.createdAt,7)).length;
+  const funnelMax  = Math.max(1, ...STAGES.filter(s => s.id!=='lost').map(s => projLeads().filter(l => l.stage===s.id).length));
 
   const agenda = [
     ...visitsUp.filter(l => daysFromToday(l.visitAt) <= 1).map(l => ({ l, kind:'visit', at:l.visitAt })),
@@ -666,7 +719,7 @@ function vToday(){
     ${kpi('New leads', newWeek, 'last 7 days', 'spark')}
     ${kpi('Booked', booked.length, `${fmtINR(booked.reduce((s,l)=>s+(Number(l.tokenAmount)||0),0))} token received`, 'bookmark')}
     ${kpi('Deals this month', dealsM.length, `<b>${fmtINR(dealSum)}</b> closed`, 'trophy', 'gold')}
-    ${kpi('Plots left', state.plots.filter(p => p.status==='available').length, `of ${state.plots.length} in inventory`, 'grid')}
+    ${kpi('Plots left', projPlots().filter(p => p.status==='available').length, `of ${projPlots().length} in inventory`, 'grid')}
   </div>
   <div class="two">
     <div class="card">
@@ -685,8 +738,8 @@ function vToday(){
     <div class="card">
       <div class="card-h"><h2>Pipeline</h2><div class="grow"></div><button class="btn sm ghost" data-go="board">Open board</button></div>
       <div class="card-b"><div class="funnel">
-        ${STAGES.filter(s => s.id!=='lost').map(s => { const n = state.leads.filter(l => l.stage===s.id).length; return `<div class="frow"><span>${s.label}</span><div class="bar"><i style="width:${Math.round(n/funnelMax*100)}%;background:${s.color}"></i></div><span class="n">${n}</span></div>`; }).join('')}
-        <div class="frow" style="color:var(--ink-3)"><span>Lost</span><div></div><span class="n">${state.leads.filter(l=>l.stage==='lost').length}</span></div>
+        ${STAGES.filter(s => s.id!=='lost').map(s => { const n = projLeads().filter(l => l.stage===s.id).length; return `<div class="frow"><span>${s.label}</span><div class="bar"><i style="width:${Math.round(n/funnelMax*100)}%;background:${s.color}"></i></div><span class="n">${n}</span></div>`; }).join('')}
+        <div class="frow" style="color:var(--ink-3)"><span>Lost</span><div></div><span class="n">${projLeads().filter(l=>l.stage==='lost').length}</span></div>
       </div></div>
     </div>
   </div>
@@ -713,7 +766,7 @@ function feedRow(a){
 function vBoard(){
   const q = ui.q;
   return `<div class="board">${STAGES.map(s => {
-    const items = state.leads.filter(l => l.stage===s.id && matches(l,q)).sort((a,b) => new Date(b.updatedAt||0) - new Date(a.updatedAt||0));
+    const items = projLeads().filter(l => l.stage===s.id && matches(l,q)).sort((a,b) => new Date(b.updatedAt||0) - new Date(a.updatedAt||0));
     const sum = s.id==='deal_done' ? items.reduce((x,l)=>x+(Number(l.dealAmount)||0),0) : s.id==='booked' ? items.reduce((x,l)=>x+(plotPrice(plotById(l.plotId))||0),0) : 0;
     return `<div class="col" data-stage="${s.id}"><div class="col-h"><span style="width:8px;height:8px;border-radius:50%;background:${s.color}"></span>${s.label}${sum?`<span class="sum">${fmtINR(sum)}</span>`:''}<span class="n">${items.length}</span></div>
       ${items.map(kcard).join('')}${items.length?'':'<div class="empty" style="padding:18px 6px">Drop a lead here</div>'}</div>`;
@@ -734,7 +787,7 @@ function kcard(l){
 
 /* ---- Leads ---- */
 function vLeads(){
-  let rows = state.leads.filter(l => matches(l, ui.q));
+  let rows = projLeads().filter(l => matches(l, ui.q));
   if (ui.filterStage) rows = rows.filter(l => l.stage === ui.filterStage);
   if (ui.filterWho) rows = rows.filter(l => l.assignedTo === ui.filterWho);
   rows.sort((a,b) => new Date(b.updatedAt||0) - new Date(a.updatedAt||0));
@@ -742,7 +795,7 @@ function vLeads(){
     <div class="card-h"><div class="filters">
       <select data-filter="stage"><option value="">All stages</option>${STAGES.map(s=>`<option value="${s.id}" ${ui.filterStage===s.id?'selected':''}>${s.label}</option>`).join('')}</select>
       <select data-filter="who"><option value="">Everyone</option>${state.team.map(m=>`<option ${ui.filterWho===m?'selected':''}>${esc(m)}</option>`).join('')}</select>
-      <span class="muted">${rows.length} of ${state.leads.length}</span></div><div class="grow"></div>
+      <span class="muted">${rows.length} of ${projLeads().length}</span></div><div class="grow"></div>
       <button class="btn sm" id="exportBtn" hidden>${I.download}Export CSV</button></div>
     <div class="tbl-wrap"><table><thead><tr><th>Lead</th><th>Stage</th><th>Source</th><th>Interest</th><th>Assigned</th><th>Last activity</th><th>Next</th></tr></thead><tbody>
       ${rows.map(l => { const a = lastAct(l); const p = plotById(l.plotId);
@@ -774,8 +827,8 @@ function vVisits(){
 /* ---- Follow-ups ---- */
 function vFollow(){
   const due = followUpsDue();
-  const later = state.leads.filter(l => l.nextFollowUp && isOpen(l) && daysFromToday(l.nextFollowUp) > 0).sort((a,b)=>new Date(a.nextFollowUp)-new Date(b.nextFollowUp));
-  const stale = state.leads.filter(l => isOpen(l) && !l.nextFollowUp && !(l.stage==='visit_scheduled'&&l.visitAt) && daysFromToday(l.updatedAt||l.createdAt) <= -3).sort((a,b)=>new Date(a.updatedAt||0)-new Date(b.updatedAt||0));
+  const later = projLeads().filter(l => l.nextFollowUp && isOpen(l) && daysFromToday(l.nextFollowUp) > 0).sort((a,b)=>new Date(a.nextFollowUp)-new Date(b.nextFollowUp));
+  const stale = projLeads().filter(l => isOpen(l) && !l.nextFollowUp && !(l.stage==='visit_scheduled'&&l.visitAt) && daysFromToday(l.updatedAt||l.createdAt) <= -3).sort((a,b)=>new Date(a.updatedAt||0)-new Date(b.updatedAt||0));
   const row = l => `<div class="row" data-open="${l.id}"><span class="av">${esc(initials(l.name))}</span><div class="grow"><div class="name">${esc(l.name)}</div><div class="meta"><span class="pill ${l.stage}">${stageOf(l.stage).label}</span><span class="mono">${esc(fmtPhone(l.phone))}</span>${l.interest?`·<span>${esc(l.interest)}</span>`:''}${l.assignedTo?`·<span>${esc(l.assignedTo)}</span>`:''}</div></div>
     ${l.nextFollowUp?`<div class="when ${daysFromToday(l.nextFollowUp)<0?'over':isToday(l.nextFollowUp)?'today':''}">${fmtRel(l.nextFollowUp)}</div>`:`<div class="when muted">quiet ${-daysFromToday(l.updatedAt||l.createdAt)}d</div>`}
     <a class="btn sm icon" href="${telHref(l.phone)}" title="Call" data-stop="1">${I.phone}</a><a class="btn sm icon" href="${waHref(l.phone)}" target="_blank" rel="noopener" title="WhatsApp" data-stop="1">${I.wa}</a></div>`;
@@ -788,16 +841,16 @@ function vFollow(){
 
 /* ---- Plots ---- */
 function vPlots(){
-  const sites = [...new Set(state.plots.map(p => p.site || 'Unnamed site'))].sort();
-  const plots = state.plots.filter(p => (!ui.plotSite || (p.site||'Unnamed site')===ui.plotSite) && (!ui.q || plotLabel(p).toLowerCase().includes(ui.q.toLowerCase())))
+  const sites = [...new Set(projPlots().map(p => p.site || 'Unnamed site'))].sort();
+  const plots = projPlots().filter(p => (!ui.plotSite || (p.site||'Unnamed site')===ui.plotSite) && (!ui.q || plotLabel(p).toLowerCase().includes(ui.q.toLowerCase())))
     .sort((a,b) => String(a.number).localeCompare(String(b.number), undefined, { numeric:true }));
-  const cnt = s => state.plots.filter(p => p.status===s).length;
-  const val = s => state.plots.filter(p => p.status===s).reduce((x,p)=>x+plotPrice(p),0);
+  const cnt = s => projPlots().filter(p => p.status===s).length;
+  const val = s => projPlots().filter(p => p.status===s).reduce((x,p)=>x+plotPrice(p),0);
   return `<div class="kpis">
     ${kpi('Available', cnt('available'), `<b>${fmtINR(val('available'))}</b> unsold value`, 'grid')}
     ${kpi('Booked', cnt('booked'), `<b>${fmtINR(val('booked'))}</b> in bookings`, 'bookmark')}
     ${kpi('Sold', cnt('sold'), `<b>${fmtINR(val('sold'))}</b> sold value`, 'trophy', 'gold')}
-    ${(() => { const tot = state.plots.reduce((x,p)=>x+(Number(p.sizeSqft)||0),0); const u = unitKey();
+    ${(() => { const tot = projPlots().reduce((x,p)=>x+(Number(p.sizeSqft)||0),0); const u = unitKey();
       const big = u==='sqft' ? Math.round(tot/1000)+'k' : fmtNum(tot/unitSqft(), 1);
       const foot = u==='sqft' ? 'sq ft across all plots' : u==='ganda' ? `${unitLabel()} · <b>${fmtNum(tot/17280)} kani</b> · ${fmtNum(tot,0)} sq ft` : `${unitLabel()} · ${fmtNum(tot,0)} sq ft`;
       return kpi('Total area', big, foot, 'pin'); })()}
@@ -818,7 +871,7 @@ const monthKey = d => { const x = new Date(d); return `${x.getFullYear()}-${pad(
 const monthLabel = k => { const [y,m] = k.split('-'); return `${MON[Number(m)-1]} ${y}`; };
 const sum = (arr, f) => arr.reduce((s,x) => s + (Number(f ? f(x) : x)||0), 0);
 function vMoney(){
-  const all = [...state.money].sort((a,b) => new Date(b.on) - new Date(a.on));
+  const all = [...projMoney()].sort((a,b) => new Date(b.on) - new Date(a.on));
   const partners = [...new Set([...state.team, ...all.map(m => m.paidBy).filter(Boolean)])];
   const months = [...new Set(all.map(m => monthKey(m.on)))].sort().reverse();
   const invested = sum(all.filter(m => m.kind==='investment'), m => m.amount);
@@ -875,15 +928,49 @@ function moneyForm(m){
     <div class="field"><label>Paid by</label><select name="paidBy" required>${team.map(t=>`<option ${t===(m.paidBy||ME)?'selected':''}>${esc(t)}</option>`).join('')}</select></div>
     <div class="field" id="catField" ${kind==='investment'?'hidden':''}><label>Category</label><select name="category">${EXPENSE_CATS.map(c=>`<option ${c===(m.category||'Site development')?'selected':''}>${c}</option>`).join('')}</select></div>
     <div class="field"><label>Date</label><input name="on" type="date" required value="${dayKey(m.on||now())}"></div>
-    <div class="field"><label>Related lead (optional)</label><select name="leadId"><option value="">—</option>${state.leads.map(l=>`<option value="${l.id}" ${l.id===m.leadId?'selected':''}>${esc(l.name)}</option>`).join('')}</select></div>
-    <div class="field"><label>Related plot (optional)</label><select name="plotId"><option value="">—</option>${state.plots.map(p=>`<option value="${p.id}" ${p.id===m.plotId?'selected':''}>${esc(plotLabel(p))}</option>`).join('')}</select></div>
+    <div class="field"><label>Related lead (optional)</label><select name="leadId"><option value="">—</option>${projLeads().map(l=>`<option value="${l.id}" ${l.id===m.leadId?'selected':''}>${esc(l.name)}</option>`).join('')}</select></div>
+    <div class="field"><label>Related plot (optional)</label><select name="plotId"><option value="">—</option>${projPlots().map(p=>`<option value="${p.id}" ${p.id===m.plotId?'selected':''}>${esc(plotLabel(p))}</option>`).join('')}</select></div>
     <div class="field span"><label>Note</label><textarea name="note" placeholder="What it was for, bill number, paid to whom…">${esc(m.note||'')}</textarea></div>
   </div><div class="form-foot">${isNew?'':`<button type="button" class="btn ghost danger" data-del-money="${m.id}">Delete</button><div style="flex:1"></div>`}<button type="button" class="btn ghost" data-close="1">Cancel</button><button class="btn primary" type="submit">${isNew?'Add':'Save'}</button></div></form>`;
 }
 function moneyCsv(){
   const H = ['Date','Type','Paid by','Category','Amount','Note','Lead','Plot','Logged by'];
-  const rows = [...state.money].sort((a,b) => new Date(a.on) - new Date(b.on)).map(m => [dayKey(m.on), m.kind, m.paidBy, m.kind==='investment'?'Capital':m.category, m.amount, m.note, leadById(m.leadId)?.name||'', plotLabel(plotById(m.plotId)), m.by]);
+  const rows = [...projMoney()].sort((a,b) => new Date(a.on) - new Date(b.on)).map(m => [dayKey(m.on), m.kind, m.paidBy, m.kind==='investment'?'Capital':m.category, m.amount, m.note, leadById(m.leadId)?.name||'', plotLabel(plotById(m.plotId)), m.by]);
   return [H, ...rows].map(r => r.map(c => `"${String(c??'').replace(/"/g,'""')}"`).join(',')).join('\r\n');
+}
+
+/* ---- Home ---- */
+function vHome(){
+  const q = ui.q.toLowerCase();
+  const list = state.projects.filter(p => !q || p.name.toLowerCase().includes(q) || (p.location||'').toLowerCase().includes(q)).sort((a,b) => a.name.localeCompare(b.name));
+  const totalOpen = state.leads.filter(isOpen).length;
+  const totalSpend = sum(state.money.filter(m=>m.kind==='expense'), m=>m.amount);
+  const card = p => { const pl = plotsOf(p.id), le = leadsOf(p.id);
+    const avail = pl.filter(x=>x.status==='available').length; const open = le.filter(isOpen).length; const value = sum(pl, x=>plotPrice(x));
+    return `<div class="proj-card" data-open-project="${p.id}">
+      <button class="btn sm icon ghost proj-edit" data-edit-project="${p.id}" data-stop="1" title="Edit project">${I.edit}</button>
+      <div><div class="name">${esc(p.name)}</div>${p.location?`<div class="loc">${I.pin}${esc(p.location)}</div>`:''}</div>
+      <div class="stats"><div class="stat"><b>${pl.length}</b><span>Plots</span></div><div class="stat"><b>${avail}</b><span>Available</span></div><div class="stat"><b>${open}</b><span>Open leads</span></div></div>
+      ${value?`<div class="hint">${fmtINR(value)} inventory value</div>`:''}
+    </div>`; };
+  return `<div class="kpis">
+    ${kpi('Projects', state.projects.length, 'sites you are selling', 'grid')}
+    ${kpi('Plots', state.plots.length, `<b>${state.plots.filter(p=>p.status==='available').length}</b> available`, 'pin')}
+    ${kpi('Open leads', totalOpen, 'across every project', 'list')}
+    ${kpi('Spent', fmtINR(totalSpend), 'across every project', 'rupee')}
+  </div>
+  <div class="card"><div class="card-h"><h2>Your projects</h2><span class="muted">${list.length}</span></div>
+    <div class="card-b">${state.projects.length===0 ? `<div class="empty"><b>Create your first project</b>A project holds its own plots, leads, visits and money — like "17 Kani", or a new layout you are about to launch.<br><br><button class="btn primary" id="newProjectCard">${I.plus}New project</button></div>`
+      : `<div class="projects">${list.map(card).join('')}<button class="proj-new" id="newProjectCard" type="button">${I.plus}New project</button></div>${list.length?'':`<p class="hint" style="margin-top:12px">Nothing matches "${esc(ui.q)}".</p>`}`}
+    </div></div>`;
+}
+function projectForm(p){
+  const isNew = !p; p = p || {};
+  return `<h2>${isNew?'New project':'Edit project'}</h2><form id="projectForm" data-id="${p.id||''}"><div class="form-grid">
+    <div class="field"><label>Project name</label><input name="name" required value="${esc(p.name||'')}" placeholder="17 Kani, Green Valley Phase 2…"></div>
+    <div class="field"><label>Location</label><input name="location" value="${esc(p.location||'')}" placeholder="Agartala, Tripura"></div>
+    <div class="field span"><label>Notes</label><textarea name="notes" placeholder="Anything worth remembering about this site">${esc(p.notes||'')}</textarea></div>
+  </div><div class="form-foot">${isNew?'':`<button type="button" class="btn ghost danger" data-del-project="${p.id}">Delete</button><div style="flex:1"></div>`}<button type="button" class="btn ghost" data-close="1">Cancel</button><button class="btn primary" type="submit">${isNew?'Create project':'Save'}</button></div></form>`;
 }
 
 /* ---- Team ---- */
@@ -893,9 +980,9 @@ function vTeam(){
   const isOwner = PARTNER && PARTNER.role === 'owner';
   const card = (m, meta, rm) => `<div class="member"><div class="h"><span class="av">${esc(initials(m))}</span><div><b>${esc(m)}</b><div class="hint">${meta}</div></div>${m===ME?'<span class="tag">you</span>':''}<div class="grow" style="flex:1"></div>${rm||''}</div>
       <div class="stats"><div class="stat"><div class="v">${stat(m,'call')}</div><div class="k">Calls</div></div><div class="stat"><div class="v">${stat(m,['text','whatsapp'])}</div><div class="k">Messages</div></div><div class="stat"><div class="v">${stat(m,'visited')}</div><div class="k">Visits</div></div>
-      <div class="stat"><div class="v">${stat(m,'booked')}</div><div class="k">Booked</div></div><div class="stat"><div class="v">${stat(m,'deal_done')}</div><div class="k">Deals</div></div><div class="stat"><div class="v">${state.leads.filter(l=>l.assignedTo===m&&isOpen(l)).length}</div><div class="k">Open</div></div></div>
-      <div class="hint" style="margin-top:10px;display:flex;justify-content:space-between"><span>Put in <b class="dim">${fmtINR(state.money.filter(x=>x.paidBy===m).reduce((s,x)=>s+(Number(x.amount)||0),0))}</b></span><a href="#" data-go="money" class="dim">ledger</a></div></div>`;
-  return `<div class="card"><div class="card-h"><h2>Partners</h2><span class="muted">each signs in with their own email</span><div class="grow"></div><button class="btn sm" id="addMemberBtn">${I.plus}Invite partner</button></div>
+      <div class="stat"><div class="v">${stat(m,'booked')}</div><div class="k">Booked</div></div><div class="stat"><div class="v">${stat(m,'deal_done')}</div><div class="k">Deals</div></div><div class="stat"><div class="v">${projLeads().filter(l=>l.assignedTo===m&&isOpen(l)).length}</div><div class="k">Open</div></div></div>
+      <div class="hint" style="margin-top:10px;display:flex;justify-content:space-between"><span>Put in <b class="dim">${fmtINR(projMoney().filter(x=>x.paidBy===m).reduce((s,x)=>s+(Number(x.amount)||0),0))}</b></span>${currentProject()?`<a href="#" data-go="money" class="dim">ledger</a>`:''}</div></div>`;
+  return `<div class="card"><div class="card-h"><h2>Partners</h2><span class="muted">each signs in with their own email · ${currentProject()?`stats for ${esc(currentProject().name)}`:'stats across every project'}</span><div class="grow"></div><button class="btn sm" id="addMemberBtn">${I.plus}Invite partner</button></div>
     <div class="card-b"><div class="team">${(state.partners||[]).map(p => card(p.name, `${esc(p.email||'')} · ${p.role}`, isOwner && p.user_id !== (SESSION&&SESSION.user.id) ? `<button class="btn sm ghost danger" data-rm-partner="${p.user_id}" title="Remove">${I.x}</button>` : '')).join('')}
       ${(state.invites||[]).map(i => card(i.name, `${esc(i.email)} · <span style="color:var(--warn)">invited, not signed up yet</span>`, `<button class="btn sm ghost danger" data-rm-invite="${esc(i.email)}" title="Cancel invite">${I.x}</button>`)).join('')}
       ${(state.partners||[]).length||(state.invites||[]).length?'':'<div class="empty"><b>No partners yet</b>Invite the people who will share this board.</div>'}</div></div></div>
@@ -955,7 +1042,7 @@ function actionForm(l, t){
   else if (t==='visit_scheduled') body = `<div class="field"><label>Visit date & time</label><input type="datetime-local" name="visitAt" required value="${toLocalInput(new Date(Date.now()+86400000).setHours(10,30,0,0))}"></div><div class="field"><label>Who will take them</label><select name="who">${state.team.map(x=>`<option ${x===(l.assignedTo||ME)?'selected':''}>${esc(x)}</option>`).join('')}</select></div>${note('Pickup point, how many people are coming…')}`;
   else if (t==='visited') body = `<div class="field"><label>Visited on</label><input type="datetime-local" name="at" value="${toLocalInput(l.visitAt && daysFromToday(l.visitAt)<=0 ? l.visitAt : now())}"></div><div class="field"><label>Liked plots</label><input name="liked" placeholder="e.g. A-12, A-14"></div>${fu}${note('Reaction, objections, what they asked for')}`;
   else if (t==='follow_up') body = `<div class="field"><label>Follow up on</label><input type="date" name="followUpAt" required value="${dayKey(new Date(Date.now()+2*86400000))}"></div><div class="field"><label>How</label><select name="how"><option>Call</option><option>WhatsApp</option><option>Visit</option></select></div>${note('Why we are following up')}`;
-  else if (t==='booked') { const avail = state.plots.filter(p => p.status==='available' || p.id===l.plotId);
+  else if (t==='booked') { const avail = projPlots().filter(p => p.status==='available' || p.id===l.plotId);
     body = `<div class="field"><label>Plot</label><select name="plotId" required><option value="">Choose a plot</option>${avail.map(p=>`<option value="${p.id}" ${p.id===l.plotId?'selected':''}>${esc(plotLabel(p))} · ${fmtArea(p)} · ${fmtINR(plotPrice(p))}</option>`).join('')}</select>${avail.length?'':'<span class="hint">No available plots. Add plots first.</span>'}</div>
       <div class="field"><label>Token amount (₹)</label><input type="number" name="amount" min="0" placeholder="50000"></div><div class="field"><label>Agreement date</label><input type="date" name="followUpAt"></div>${note('Payment mode, registration plan…')}`; }
   else if (t==='deal_done') body = `<div class="field"><label>Final amount (₹)</label><input type="number" name="amount" min="0" required value="${l.dealAmount || (plotById(l.plotId)?plotPrice(plotById(l.plotId)):'')}"></div><div class="field"><label>Registered on</label><input type="date" name="at" value="${dayKey(now())}"></div>${note('Registration details, referral due…')}`;
@@ -1038,7 +1125,7 @@ function leadForm(l){
 }
 function plotForm(){
   return `<h2>Add plots</h2><p>Add one plot, or a numbered range in one go.</p><form id="plotForm"><div class="form-grid">
-    <div class="field span"><label>Site / layout name</label><input name="site" value="${esc(ui.plotSite || (state.plots[0]&&state.plots[0].site) || '')}" placeholder="Green Valley Phase 2"></div>
+    <div class="field span"><label>Site / layout name</label><input name="site" value="${esc(ui.plotSite || (projPlots()[0]&&projPlots()[0].site) || (currentProject()&&currentProject().name) || '')}" placeholder="Green Valley Phase 2"></div>
     <div class="field"><label>Prefix</label><input name="prefix" placeholder="A-" value="A-"></div>
     <div class="field"><label>Numbers from – to</label><div style="display:flex;gap:8px"><input name="from" type="number" min="1" value="1" required><input name="to" type="number" min="1" value="1" required></div></div>
     <div class="field"><label>Size (${unitLabel()})</label><input name="size" type="number" min="0.01" step="any" required value="${unitKey()==='sqft'?1200:unitKey()==='ganda'?5:1}"></div>
@@ -1063,7 +1150,7 @@ let toastT; function toast(msg){ let t = $('.toast'); if (!t) { t = document.cre
 /* ===================== export ===================== */
 function csv(){
   const H = ['Name','Phone','Stage','Source','Interest','Budget','Assigned','Plot','Plot area','Token','Deal amount','Next follow-up','Visit','Created','Last activity','Last by','Notes'];
-  const rows = state.leads.map(l => { const a = lastAct(l); const p = plotById(l.plotId); return [l.name,l.phone,stageOf(l.stage).label,l.source,l.interest,l.budget,l.assignedTo,p?plotLabel(p):'',p?fmtAreaBoth(p):'',l.tokenAmount,l.dealAmount,l.nextFollowUp?dayKey(l.nextFollowUp):'',l.visitAt?fmtDT(l.visitAt):'',dayKey(l.createdAt),a?`${ACTS[a.type]?.label||a.type} ${fmtDT(a.at)}`:'',a?a.by:'',l.notes]; });
+  const rows = projLeads().map(l => { const a = lastAct(l); const p = plotById(l.plotId); return [l.name,l.phone,stageOf(l.stage).label,l.source,l.interest,l.budget,l.assignedTo,p?plotLabel(p):'',p?fmtAreaBoth(p):'',l.tokenAmount,l.dealAmount,l.nextFollowUp?dayKey(l.nextFollowUp):'',l.visitAt?fmtDT(l.visitAt):'',dayKey(l.createdAt),a?`${ACTS[a.type]?.label||a.type} ${fmtDT(a.at)}`:'',a?a.by:'',l.notes]; });
   return [H, ...rows].map(r => r.map(c => `"${String(c??'').replace(/"/g,'""')}"`).join(',')).join('\r\n');
 }
 async function exportCsv(which){
@@ -1207,7 +1294,7 @@ function normalizeResult(r){
   let areaUnit = UNITS[r && r.areaUnit] ? r.areaUnit : ''; if (!areaUnit) { const c = {}; for (const p of plots) if (p.areaUnit) c[p.areaUnit] = (c[p.areaUnit]||0)+1; areaUnit = Object.keys(c).sort((a,b)=>c[b]-c[a])[0] || ''; }
   return { site: String((r && r.site) || ''), areaUnit, unitsFound: String((r && r.unitsFound) || ''), notes: String((r && r.notes) || ''), plots };
 }
-function importModal(){ Object.assign(Imp, { step:'pick', file:null, msg:'', texts:[], pages:[], thumbs:[], result:null, rows:[], error:'', abort:null, method:'', tiled:false, site: ui.plotSite || (state.plots[0] && state.plots[0].site) || '', rate: (state.plots[0] && state.plots[0].pricePerSqft) || 1500 }); renderImport(); }
+function importModal(){ Object.assign(Imp, { step:'pick', file:null, msg:'', texts:[], pages:[], thumbs:[], result:null, rows:[], error:'', abort:null, method:'', tiled:false, site: ui.plotSite || (projPlots()[0] && projPlots()[0].site) || (currentProject() && currentProject().name) || '', rate: (projPlots()[0] && projPlots()[0].pricePerSqft) || 1500 }); renderImport(); }
 function renderImport(){
   const ov = $('#overlay'); const accept = ['.pdf','application/pdf','image/jpeg','image/png','image/webp'].join(',');
   let body = '';
@@ -1225,7 +1312,7 @@ function renderImport(){
     <div class="form-foot"><button type="button" class="btn ghost" id="importStop">Stop</button></div>`;
   else if (Imp.step === 'error') body = `<h2>Could not read the plan</h2><p>${esc(Imp.error)}</p>${Imp.textOnly ? '<p class="hint">You can still read the plot numbers and areas from the PDF text without Claude. It is less accurate on drawings, so check every row.</p>' : ''}<div class="form-foot"><button type="button" class="btn ghost" data-close="1">Close</button>${Imp.textOnly ? '<button type="button" class="btn" id="importTextOnly">Read PDF text only</button>' : ''}<button type="button" class="btn primary" id="importRetry">Try another file</button></div>`;
   else if (Imp.step === 'review') {
-    const site = Imp.site; const existing = n => state.plots.find(p => (p.site||'') === (site||'') && String(p.number).toLowerCase() === String(n).toLowerCase());
+    const site = Imp.site; const existing = n => projPlots().find(p => (p.site||'') === (site||'') && String(p.number).toLowerCase() === String(n).toLowerCase());
     const inc = Imp.rows.filter(r => r.include); const upd = inc.filter(r => existing(r.number)).length; const low = Imp.rows.filter(r => r.confidence==='low').length;
     body = `<h2>Check the plot list</h2>
     <div class="sumline"><span><b>${Imp.rows.length}</b> plots found</span><span><b>${inc.length - upd}</b> new</span><span><b>${upd}</b> already in inventory (size will be updated)</span>${low?`<span style="color:var(--warn)"><b>${low}</b> need a second look</span>`:''}<span class="hint">${esc(Imp.result.unitsFound ? 'Units: ' + Imp.result.unitsFound : '')}</span></div>
@@ -1294,11 +1381,11 @@ async function commitImport(f){
   if (!rows.length) return;
   let added = 0, updated = 0;
   for (const r of rows){
-    const ex = state.plots.find(p => (p.site||'') === site && String(p.number).toLowerCase() === r.number.toLowerCase());
+    const ex = projPlots().find(p => (p.site||'') === site && String(p.number).toLowerCase() === r.number.toLowerCase());
     const dims = r.widthFt && r.depthFt ? { widthFt: r.widthFt, depthFt: r.depthFt } : {};
     const area = r.areaValue && r.areaUnit ? { areaValue: r.areaValue, areaUnit: r.areaUnit } : { areaValue: +(r.sizeSqft / UNITS[unit].sqft).toFixed(3), areaUnit: unit };
     if (ex) { await Store.putPlot({ ...ex, sizeSqft: r.sizeSqft, ...area, facing: r.facing || ex.facing || '', ...dims }); updated++; }
-    else { await Store.putPlot({ id: uid(), site, number: r.number, sizeSqft: r.sizeSqft, ...area, pricePerSqft: rate, facing: r.facing, status: 'available', leadId: '', importedAt: new Date().toISOString(), importedBy: ME || '', ...dims }); added++; }
+    else { await Store.putPlot({ id: uid(), projectId: ui.projectId, site, number: r.number, sizeSqft: r.sizeSqft, ...area, pricePerSqft: rate, facing: r.facing, status: 'available', leadId: '', importedAt: new Date().toISOString(), importedBy: ME || '', ...dims }); added++; }
   }
   if (unit !== unitKey()) await Store.putPrefs({ areaUnit: unit });
   if (site) ui.plotSite = site;
@@ -1307,9 +1394,14 @@ async function commitImport(f){
 
 /* ===================== events ===================== */
 document.addEventListener('click', async e => {
-  const t = e.target.closest('[data-view],[data-go],[data-open],[data-close],[data-act],[data-act-cancel],[data-vtab],[data-quick],[data-plot],[data-me],[data-seed],[data-rm-member],[data-del-plot],#importBtn,#importStop,#importRetry,[data-login-mode],#signOutBtn,[data-rm-partner],[data-rm-invite],[data-money],[data-del-money],[data-kind],#addMoneyBtn,#exportMoneyBtn,#addLeadBtn,#addPlotBtn,#addMemberBtn,#editLead,#deleteLead,#meChip,#exportBtn,#exportBtn2,#clearSamples,[data-stop]');
+  const t = e.target.closest('[data-view],[data-go],[data-open],[data-close],[data-act],[data-act-cancel],[data-vtab],[data-quick],[data-plot],[data-me],[data-seed],[data-rm-member],[data-del-plot],#importBtn,#importStop,#importRetry,[data-login-mode],#signOutBtn,[data-rm-partner],[data-rm-invite],[data-money],[data-del-money],[data-kind],#addMoneyBtn,#exportMoneyBtn,#addLeadBtn,#addPlotBtn,#addMemberBtn,#editLead,#deleteLead,#meChip,#exportBtn,#exportBtn2,#clearSamples,[data-stop],#brandBtn,#backHomeBtn,[data-open-project],#newProjectBtn,#newProjectCard,[data-edit-project],[data-del-project]');
   if (!t) return;
   if (t.dataset.stop) { e.stopPropagation(); return; }
+  if (t.id === 'brandBtn' || t.id === 'backHomeBtn') { goHome(); return; }
+  if (t.dataset.openProject) { openProject(t.dataset.openProject); return; }
+  if (t.id === 'newProjectBtn' || t.id === 'newProjectCard') { openModal(projectForm(null)); return; }
+  if (t.dataset.editProject) { const p = state.projects.find(x => x.id === t.dataset.editProject); if (p) openModal(projectForm(p)); return; }
+  if (t.dataset.delProject) { if (confirm('Delete this project? This only works if it has no plots or leads left.')) { const ok = await Store.deleteProject(t.dataset.delProject); if (ok) { closeOverlay(); toast('Project deleted'); } } return; }
   if (t.dataset.view || t.dataset.go) { ui.view = t.dataset.view || t.dataset.go; ui.openLead = null; $('#overlay').innerHTML=''; render(); window.scrollTo(0,0); return; }
   if (t.dataset.open) { e.preventDefault(); ui.openLead = t.dataset.open; ui.action = null; render(); return; }
   if (t.dataset.close) { if (t.classList.contains('modal') && e.target !== t) return; closeOverlay(); return; }
@@ -1324,7 +1416,7 @@ document.addEventListener('click', async e => {
   if (t.dataset.rmInvite) { Store.removeInvite(t.dataset.rmInvite); return; }
   if (t.dataset.delPlot) { if (confirm('Delete this plot?')) { await Store.deletePlot(t.dataset.delPlot); closeOverlay(); } return; }
   if (t.id === 'importBtn') { importModal(); return; }
-  if (t.id === 'setRateBtn') { const n = state.plots.filter(p => !ui.plotSite || (p.site||'Unnamed site')===ui.plotSite).length; openModal(`<h2>Set rate</h2><p>Applies to all <b>${n}</b> plots ${ui.plotSite?`in ${esc(ui.plotSite)}`:'in inventory'}. Sold plots keep their rate.</p><form id="rateForm"><div class="form-grid"><div class="field"><label>Rate (₹ per ${unitLabel()})</label><input name="rate" type="number" min="1" step="any" required placeholder="${unitKey()==='ganda'?'e.g. 900000':'e.g. 1500'}"></div><div class="field"><label>Apply to</label><select name="scope"><option value="unset">Only plots with no rate</option><option value="all">All available and booked plots</option></select></div></div><div class="form-foot"><button type="button" class="btn ghost" data-close="1">Cancel</button><button class="btn primary" type="submit">Apply</button></div></form>`); return; }
+  if (t.id === 'setRateBtn') { const n = projPlots().filter(p => !ui.plotSite || (p.site||'Unnamed site')===ui.plotSite).length; openModal(`<h2>Set rate</h2><p>Applies to all <b>${n}</b> plots ${ui.plotSite?`in ${esc(ui.plotSite)}`:'in inventory'}. Sold plots keep their rate.</p><form id="rateForm"><div class="form-grid"><div class="field"><label>Rate (₹ per ${unitLabel()})</label><input name="rate" type="number" min="1" step="any" required placeholder="${unitKey()==='ganda'?'e.g. 900000':'e.g. 1500'}"></div><div class="field"><label>Apply to</label><select name="scope"><option value="unset">Only plots with no rate</option><option value="all">All available and booked plots</option></select></div></div><div class="form-foot"><button type="button" class="btn ghost" data-close="1">Cancel</button><button class="btn primary" type="submit">Apply</button></div></form>`); return; }
   if (t.id === 'importStop') { if (Imp.abort) Imp.abort.abort(); Imp.step = 'pick'; renderImport(); return; }
   if (t.id === 'importRetry') { Imp.step = 'pick'; renderImport(); return; }
   if (t.id === 'importTextOnly') { Imp.result = normalizeResult(heuristicParse(Imp.texts)); Imp.method = 'text'; Imp.rows = Imp.result.plots; Imp.unit = Imp.result.areaUnit || unitKey(); Imp.step = 'review'; renderImport(); return; }
@@ -1347,7 +1439,7 @@ document.addEventListener('submit', async e => {
   if (f.id === 'leadForm') {
     const v = n => f.elements[n].value.trim();
     const id = f.dataset.id; const old = id ? leadById(id) : null;
-    const lead = old ? { ...old } : { id:uid(), stage:'new', createdAt:new Date().toISOString(), activities:[], nextFollowUp:'', visitAt:'', plotId:'', tokenAmount:0, dealAmount:0 };
+    const lead = old ? { ...old } : { id:uid(), projectId: ui.projectId, stage:'new', createdAt:new Date().toISOString(), activities:[], nextFollowUp:'', visitAt:'', plotId:'', tokenAmount:0, dealAmount:0 };
     Object.assign(lead, { name:v('name'), phone:v('phone'), source:v('source'), assignedTo:v('assignedTo'), interest:v('interest'), budget:Number(v('budget'))||0, notes:v('notes') });
     logAct(lead, { type: old ? 'edit' : 'created', note:'' });
     if (lead.assignedTo && !state.team.includes(lead.assignedTo)) await Store.putTeam([...state.team, lead.assignedTo]);
@@ -1360,7 +1452,7 @@ document.addEventListener('submit', async e => {
     const from = Number(v('from')), to = Math.max(Number(v('to')), Number(v('from')));
     if (to - from > 300) return toast('Add at most 300 plots at a time.');
     const size = Number(v('size')), rate = Number(v('rate'));
-    for (let n = from; n <= to; n++) await Store.putPlot({ id:uid(), site:v('site'), number:v('prefix')+n, sizeSqft:Math.round(size*unitSqft()), areaValue:size, areaUnit:unitKey(), pricePerSqft:rate/unitSqft(), facing:v('facing'), status:'available', leadId:'' });
+    for (let n = from; n <= to; n++) await Store.putPlot({ id:uid(), projectId: ui.projectId, site:v('site'), number:v('prefix')+n, sizeSqft:Math.round(size*unitSqft()), areaValue:size, areaUnit:unitKey(), pricePerSqft:rate/unitSqft(), facing:v('facing'), status:'available', leadId:'' });
     closeOverlay(); toast(`${to-from+1} plot${to>from?'s':''} added`);
   } else if (f.id === 'plotEdit') {
     const v = n => f.elements[n].value.trim(); const p = plotById(f.dataset.id);
@@ -1369,14 +1461,14 @@ document.addEventListener('submit', async e => {
     closeOverlay(); toast('Plot saved');
   } else if (f.id === 'rateForm') {
     const rate = Number(f.elements.rate.value) / unitSqft(); const scope = f.elements.scope.value; let n = 0;
-    for (const p of state.plots) { if (ui.plotSite && (p.site||'Unnamed site')!==ui.plotSite) continue; if (p.status==='sold') continue; if (scope==='unset' && Number(p.pricePerSqft)>0) continue; await Store.putPlot({ ...p, pricePerSqft: rate }); n++; }
+    for (const p of projPlots()) { if (ui.plotSite && (p.site||'Unnamed site')!==ui.plotSite) continue; if (p.status==='sold') continue; if (scope==='unset' && Number(p.pricePerSqft)>0) continue; await Store.putPlot({ ...p, pricePerSqft: rate }); n++; }
     closeOverlay(); toast(`Rate set on ${n} plot${n===1?'':'s'}`);
   } else if (f.id === 'importForm') {
     await commitImport(f);
   } else if (f.id === 'moneyForm') {
     const v = n => f.elements[n] ? f.elements[n].value.trim() : '';
     const old = f.dataset.id ? state.money.find(x => x.id === f.dataset.id) : null;
-    const m = { ...(old || { id:uid(), by:ME||'Unknown', createdAt:new Date().toISOString() }), kind:v('kind'), amount:Number(v('amount'))||0, paidBy:v('paidBy'), category:v('kind')==='investment'?'':v('category'), on:new Date(v('on')+'T12:00:00').toISOString(), leadId:v('leadId'), plotId:v('plotId'), note:v('note') };
+    const m = { ...(old || { id:uid(), projectId: ui.projectId, by:ME||'Unknown', createdAt:new Date().toISOString() }), kind:v('kind'), amount:Number(v('amount'))||0, paidBy:v('paidBy'), category:v('kind')==='investment'?'':v('category'), on:new Date(v('on')+'T12:00:00').toISOString(), leadId:v('leadId'), plotId:v('plotId'), note:v('note') };
     if (!m.amount) return toast('Enter an amount.');
     if (m.paidBy && !state.team.includes(m.paidBy)) await Store.putTeam([...state.team, m.paidBy]);
     await Store.putMoney(m); closeOverlay(); toast(old ? 'Entry updated' : `${fmtINR(m.amount)} recorded for ${m.paidBy}`);
@@ -1386,6 +1478,13 @@ document.addEventListener('submit', async e => {
     else { const { data, error } = await sb.auth.signUp({ email, password }); if (error) msg.textContent = error.message; else if (data.session) location.reload(); else msg.textContent = 'Check your email and open the confirmation link, then sign in here.'; }
   } else if (f.id === 'memberForm') {
     const n = f.elements.name.value.trim(), em = f.elements.email.value.trim(); if (!n || !em) return; await Store.invite(n, em); closeOverlay(); toast(`${n} invited`);
+  } else if (f.id === 'projectForm') {
+    const v = n => f.elements[n].value.trim();
+    const id = f.dataset.id || uid(); const old = f.dataset.id ? state.projects.find(x => x.id === id) : null;
+    const p = { ...(old || { id, createdAt:new Date().toISOString() }), name:v('name'), location:v('location'), notes:v('notes') };
+    if (!p.name) return toast('Give the project a name.');
+    await Store.putProject(p); closeOverlay(); toast(old ? 'Project saved' : 'Project created');
+    if (!old) openProject(p.id);
   }
 });
 document.addEventListener('change', e => {
@@ -1418,7 +1517,7 @@ document.addEventListener('dragleave', e => { const col = e.target.closest('.col
 document.addEventListener('drop', e => { const col = e.target.closest('.col'); if (!col || !dragId) return; e.preventDefault(); const id = dragId; dragId = null; col.classList.remove('over'); moveStage(id, col.dataset.stage); });
 
 /* ===================== boot ===================== */
-$('#searchIco').innerHTML = I.search; $('#plusIco').innerHTML = I.plus;
+$('#searchIco').innerHTML = I.search; $('#plusIco').innerHTML = I.plus; $('#plusIco2').innerHTML = I.plus; $('#backIco').innerHTML = I.arrowleft;
 render();
 downloads = { save: async ({ filename, data }) => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data], { type:'text/csv' })); a.download = filename; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); } };
 Store.init();
