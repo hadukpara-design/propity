@@ -1109,6 +1109,19 @@ async function moveStage(id, stage){
 
 /* ===================== modals ===================== */
 function openModal(html){ $('#overlay').innerHTML = `<div class="modal" data-close="1"><div class="box" data-stop="1">${html}</div></div>`; const f = $('#overlay input, #overlay select'); if (f) f.focus(); }
+function confirmModal(message){
+  return new Promise(resolve => {
+    const el = document.createElement('div'); el.className = 'modal'; el.style.zIndex = '200';
+    el.innerHTML = `<div class="box" style="width:min(380px,100%)"><h2>Are you sure?</h2><p style="color:var(--ink-2);margin:0 0 6px">${esc(message)}</p>
+      <div class="form-foot"><button type="button" class="btn ghost" data-no>Cancel</button><button type="button" class="btn ghost danger" data-yes>Yes, continue</button></div></div>`;
+    document.body.appendChild(el);
+    const done = v => { el.remove(); resolve(v); };
+    el.addEventListener('click', e => { if (e.target === el) done(false); });
+    el.querySelector('[data-yes]').onclick = () => done(true);
+    el.querySelector('[data-no]').onclick = () => done(false);
+    el.querySelector('[data-yes]').focus();
+  });
+}
 function closeOverlay(){ if (ui.locked) return; ui.openLead = null; ui.action = null; $('#overlay').innerHTML = ''; }
 function leadForm(l){
   const isNew = !l; l = l || {};
@@ -1201,7 +1214,7 @@ function sampleData(){
 }
 
 async function clearSamples(){
-  if (!confirm('Remove all sample leads and sample plots? Your own entries stay.')) return;
+  if (!(await confirmModal('Remove all sample leads and sample plots? Your own entries stay.'))) return;
   for (const l of state.leads.filter(l=>l.sample)) await Store.deleteLead(l.id);
   for (const m of state.money.filter(m=>m.sample)) await Store.deleteMoney(m.id);
   toast('Sample data removed');
@@ -1401,7 +1414,7 @@ document.addEventListener('click', async e => {
   if (t.dataset.openProject) { openProject(t.dataset.openProject); return; }
   if (t.id === 'newProjectBtn' || t.id === 'newProjectCard') { openModal(projectForm(null)); return; }
   if (t.dataset.editProject) { const p = state.projects.find(x => x.id === t.dataset.editProject); if (p) openModal(projectForm(p)); return; }
-  if (t.dataset.delProject) { if (confirm('Delete this project? This only works if it has no plots or leads left.')) { const ok = await Store.deleteProject(t.dataset.delProject); if (ok) { closeOverlay(); toast('Project deleted'); } } return; }
+  if (t.dataset.delProject) { if (await confirmModal('Delete this project? This only works if it has no plots or leads left.')) { const ok = await Store.deleteProject(t.dataset.delProject); if (ok) { closeOverlay(); toast('Project deleted'); } } return; }
   if (t.dataset.view || t.dataset.go) { ui.view = t.dataset.view || t.dataset.go; ui.openLead = null; $('#overlay').innerHTML=''; render(); window.scrollTo(0,0); return; }
   if (t.dataset.open) { e.preventDefault(); ui.openLead = t.dataset.open; ui.action = null; render(); return; }
   if (t.dataset.close) { if (t.classList.contains('modal') && e.target !== t) return; closeOverlay(); return; }
@@ -1412,16 +1425,16 @@ document.addEventListener('click', async e => {
   if (t.dataset.plot) { openModal(plotSheet(plotById(t.dataset.plot))); return; }
   if (t.dataset.loginMode) { e.preventDefault(); showLogin(t.dataset.loginMode); return; }
   if (t.id === 'signOutBtn') { Store.signOut(); return; }
-  if (t.dataset.rmPartner) { if (confirm('Remove this partner? They will no longer be able to open the board. Their logged activity stays.')) Store.removePartner(t.dataset.rmPartner); return; }
+  if (t.dataset.rmPartner) { if (await confirmModal('Remove this partner? They will no longer be able to open the board. Their logged activity stays.')) Store.removePartner(t.dataset.rmPartner); return; }
   if (t.dataset.rmInvite) { Store.removeInvite(t.dataset.rmInvite); return; }
-  if (t.dataset.delPlot) { if (confirm('Delete this plot?')) { await Store.deletePlot(t.dataset.delPlot); closeOverlay(); } return; }
+  if (t.dataset.delPlot) { if (await confirmModal('Delete this plot?')) { await Store.deletePlot(t.dataset.delPlot); closeOverlay(); } return; }
   if (t.id === 'importBtn') { importModal(); return; }
   if (t.id === 'setRateBtn') { const n = projPlots().filter(p => !ui.plotSite || (p.site||'Unnamed site')===ui.plotSite).length; openModal(`<h2>Set rate</h2><p>Applies to all <b>${n}</b> plots ${ui.plotSite?`in ${esc(ui.plotSite)}`:'in inventory'}. Sold plots keep their rate.</p><form id="rateForm"><div class="form-grid"><div class="field"><label>Rate (₹ per ${unitLabel()})</label><input name="rate" type="number" min="1" step="any" required placeholder="${unitKey()==='ganda'?'e.g. 900000':'e.g. 1500'}"></div><div class="field"><label>Apply to</label><select name="scope"><option value="unset">Only plots with no rate</option><option value="all">All available and booked plots</option></select></div></div><div class="form-foot"><button type="button" class="btn ghost" data-close="1">Cancel</button><button class="btn primary" type="submit">Apply</button></div></form>`); return; }
   if (t.id === 'importStop') { if (Imp.abort) Imp.abort.abort(); Imp.step = 'pick'; renderImport(); return; }
   if (t.id === 'importRetry') { Imp.step = 'pick'; renderImport(); return; }
   if (t.id === 'importTextOnly') { Imp.result = normalizeResult(heuristicParse(Imp.texts)); Imp.method = 'text'; Imp.rows = Imp.result.plots; Imp.unit = Imp.result.areaUnit || unitKey(); Imp.step = 'review'; renderImport(); return; }
   if (t.dataset.money) { const m = state.money.find(x => x.id === t.dataset.money); if (m) openModal(moneyForm(m)); return; }
-  if (t.dataset.delMoney) { if (confirm('Delete this entry?')) { await Store.deleteMoney(t.dataset.delMoney); closeOverlay(); toast('Entry deleted'); } return; }
+  if (t.dataset.delMoney) { if (await confirmModal('Delete this entry?')) { await Store.deleteMoney(t.dataset.delMoney); closeOverlay(); toast('Entry deleted'); } return; }
   if (t.dataset.kind) { const f = t.closest('form'); f.elements.kind.value = t.dataset.kind; $$('[data-kind]', f).forEach(b => b.classList.toggle('on', b === t)); $('#catField', f).hidden = t.dataset.kind === 'investment'; return; }
   if (t.id === 'addMoneyBtn') { openModal(moneyForm(null)); return; }
   if (t.id === 'exportMoneyBtn') { exportCsv('money'); return; }
@@ -1429,8 +1442,8 @@ document.addEventListener('click', async e => {
   if (t.id === 'addPlotBtn') { openModal(plotForm()); return; }
   if (t.id === 'addMemberBtn') { openModal(`<h2>Invite a partner</h2><p>They open this same page, choose “Create your password” with this email, and get full access.</p><form id="memberForm"><div class="form-grid"><div class="field"><label>Name</label><input name="name" required placeholder="Partner's name"></div><div class="field"><label>Email</label><input name="email" type="email" required placeholder="partner@gmail.com"></div></div><div class="form-foot"><button type="button" class="btn ghost" data-close="1">Cancel</button><button class="btn primary" type="submit">Invite</button></div></form>`); return; }
   if (t.id === 'editLead') { openModal(leadForm(leadById(ui.openLead))); return; }
-  if (t.id === 'deleteLead') { const l = leadById(ui.openLead); if (l && confirm(`Delete ${l.name} and their whole history?`)) { const p = plotById(l.plotId); if (p && p.leadId===l.id && p.status!=='sold') await Store.putPlot({ ...p, status:'available', leadId:'' }); await Store.deleteLead(l.id); closeOverlay(); toast('Lead deleted'); } return; }
-  if (t.id === 'meChip') { if (ME && confirm('Sign out of MyCoinMap on this device?')) Store.signOut(); return; }
+  if (t.id === 'deleteLead') { const l = leadById(ui.openLead); if (l && await confirmModal(`Delete ${l.name} and their whole history?`)) { const p = plotById(l.plotId); if (p && p.leadId===l.id && p.status!=='sold') await Store.putPlot({ ...p, status:'available', leadId:'' }); await Store.deleteLead(l.id); closeOverlay(); toast('Lead deleted'); } return; }
+  if (t.id === 'meChip') { if (ME && await confirmModal('Sign out of MyCoinMap on this device?')) Store.signOut(); return; }
   if (t.id === 'exportBtn' || t.id === 'exportBtn2') { exportCsv(); return; }
   if (t.id === 'clearSamples') { clearSamples(); return; }
 });
