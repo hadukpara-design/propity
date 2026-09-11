@@ -498,7 +498,7 @@ const ACTS = {
 };
 
 /* ===================== state ===================== */
-const state = { projects:[], leads:[], plots:[], team:[], money:[], partners:[], invites:[], prefs:{ areaUnit:'ganda' }, ready:false, mode:'db' };
+const state = { projects:[], leads:[], plots:[], team:[], teamNames:[], money:[], prefs:{ areaUnit:'ganda' }, ready:false, mode:'db' };
 let downloads = null, sampler = null, sampleCaps = null, samplerBlocked = '';
 const ui = { projectId:null, view:'home', q:'', openLead:null, action:null, filterStage:'', filterWho:'', visitsTab:'upcoming', plotSite:'', moneyWho:'', moneyKind:'', moneyMonth:'' };
 let ME = null;
@@ -530,7 +530,10 @@ function goHome(){ ui.projectId = null; ui.view = 'home'; ui.q = ''; const s = $
 const SB_URL = 'https://ddpzkrytljgjathmzhak.supabase.co';
 const SB_KEY = 'sb_publishable_weQ2Ue5ykQebdxz4i2NJ7A_lWZg13lh';
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
-let SESSION = null, PARTNER = null;
+let SESSION = null;
+const TEAM_CODE = 'kani2026';
+const SHARED_EMAIL = 'team@mycoinmap.co';
+const SHARED_PASSWORD = 'kani2026';
 const GANDA = 864;
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : '';
 const plotFromRow = r => { const sq = Number(r.area_sqft) || Math.round(Number(r.ganda_size) * GANDA); return { id:String(r.id), projectId:r.project_id || '', number:String(r.plot_number), site:r.site || '17 Kani', sizeSqft:sq, areaValue:Number(r.ganda_size) || null, areaUnit:'ganda', pricePerSqft: sq ? Number(r.price_lakhs) * 1e5 / sq : 0, facing:cap(r.facing || ''), status:r.status === 'reserved' ? 'booked' : (r.status || 'available'), rawStatus:r.status, leadId:r.lead_id || '', widthFt:r.width_ft ? Number(r.width_ft) : null, depthFt:r.depth_ft ? Number(r.depth_ft) : null, note:r.notes || '' }; };
@@ -544,23 +547,31 @@ const rowFromProject = p => ({ id:p.id, name:p.name, location:p.location||null, 
 
 const Store = {
   async init(){
-    const { data } = await sb.auth.getSession(); SESSION = data.session;
-    sb.auth.onAuthStateChange((_ev, s) => { const had = !!SESSION; SESSION = s; if (!!s !== had) location.reload(); });
     state.ready = true;
-    if (!SESSION) { showLogin(); return; }
-    await this.loadPartner();
-    if (!PARTNER) { showNotPartner(); return; }
-    ME = PARTNER.name; state.mode = 'db';
-    await this.loadAll(); render(); this.subscribe();
+    let unlocked = false; try { unlocked = localStorage.getItem('mycoinmap.unlocked') === '1'; } catch {}
+    if (!unlocked) { showTeamCode(); return; }
+    await this.unlock();
   },
-  async loadPartner(){ const { data } = await sb.from('crm_partners').select('*').eq('user_id', SESSION.user.id).maybeSingle(); PARTNER = data || null; },
+  async unlock(){
+    const { data } = await sb.auth.getSession(); SESSION = data.session;
+    if (!SESSION) {
+      const r = await sb.auth.signInWithPassword({ email: SHARED_EMAIL, password: SHARED_PASSWORD });
+      if (r.error) { showConnectError(r.error.message); return; }
+      SESSION = r.data.session;
+    }
+    await this.loadAll(); state.mode = 'db';
+    try { ME = localStorage.getItem('mycoinmap.me') || null; } catch { ME = null; }
+    if (!ME) { showWhoAreYou(); return; }
+    render(); this.subscribe();
+  },
   async loadAll(){
-    const [l, p, m, s, t, i, pr] = await Promise.all([sb.from('crm_leads').select('*'), sb.from('plots').select('*').order('plot_number'), sb.from('crm_money').select('*'), sb.from('crm_settings').select('*'), sb.from('crm_partners').select('*').order('created_at'), sb.from('crm_invites').select('*'), sb.from('crm_projects').select('*').order('created_at')]);
-    for (const r of [l, p, m, s, t, i, pr]) if (r.error) dbErr(r.error);
+    const [l, p, m, s, pr] = await Promise.all([sb.from('crm_leads').select('*'), sb.from('plots').select('*').order('plot_number'), sb.from('crm_money').select('*'), sb.from('crm_settings').select('*'), sb.from('crm_projects').select('*').order('created_at')]);
+    for (const r of [l, p, m, s, pr]) if (r.error) dbErr(r.error);
     state.leads = (l.data || []).map(leadFromRow); state.plots = (p.data || []).map(plotFromRow); state.money = (m.data || []).map(moneyFromRow); state.projects = (pr.data || []).map(projectFromRow);
     const prefs = (s.data || []).find(x => x.key === 'prefs'); state.prefs = { areaUnit:'ganda', ...(prefs ? prefs.value : {}) };
-    state.partners = t.data || []; state.invites = i.data || [];
-    state.team = [...new Set([...state.partners.map(x => x.name), ...state.invites.map(x => x.name), ...state.leads.map(x => x.assignedTo), ...state.money.map(x => x.paidBy)].filter(Boolean))];
+    const teamRow = (s.data || []).find(x => x.key === 'team_names');
+    state.teamNames = Array.isArray(teamRow && teamRow.value && teamRow.value.names) ? teamRow.value.names : [];
+    state.team = [...new Set([...state.teamNames, ...state.leads.map(x => x.assignedTo), ...state.money.map(x => x.paidBy)].filter(Boolean))];
   },
   subscribe(){ let timer; const refresh = () => { clearTimeout(timer); timer = setTimeout(async () => { await this.loadAll(); render(); }, 300); };
     sb.channel('mycoinmap').on('postgres_changes', { event:'*', schema:'public' }, refresh).subscribe(); },
@@ -593,31 +604,42 @@ const Store = {
     const { error } = await sb.from('crm_projects').delete().eq('id', id); if (error) { dbErr(error); return false; }
     return true;
   },
-  async putTeam(members){ state.team = [...new Set(members)]; render(); },
-  async invite(name, email){ const { error } = await sb.from('crm_invites').insert({ name, email:email.toLowerCase(), invited_by:ME }); if (error) return dbErr(error); await this.loadAll(); render(); },
-  async removeInvite(email){ const { error } = await sb.from('crm_invites').delete().eq('email', email); if (error) return dbErr(error); await this.loadAll(); render(); },
-  async removePartner(userId){ const { error } = await sb.from('crm_partners').delete().eq('user_id', userId); if (error) return dbErr(error); await this.loadAll(); render(); },
-  async signOut(){ await sb.auth.signOut(); location.reload(); }
+  async addTeamName(name){ const names = [...new Set([...state.teamNames, name])]; state.teamNames = names; state.team = [...new Set([...names, ...state.leads.map(x=>x.assignedTo), ...state.money.map(x=>x.paidBy)].filter(Boolean))]; render(); const { error } = await sb.from('crm_settings').upsert({ key:'team_names', value:{ names } }); if (error) dbErr(error); },
+  async removeTeamName(name){ const names = state.teamNames.filter(n => n !== name); state.teamNames = names; state.team = [...new Set([...names, ...state.leads.map(x=>x.assignedTo), ...state.money.map(x=>x.paidBy)].filter(Boolean))]; render(); const { error } = await sb.from('crm_settings').upsert({ key:'team_names', value:{ names } }); if (error) dbErr(error); }
 };
 function dbErr(e){
   const msg = (e && e.message) || '';
-  if (/row-level security|permission denied/i.test(msg)) toast('You are not allowed to do that. Ask the owner to add you as a partner.');
+  if (/row-level security|permission denied/i.test(msg)) toast('You are not allowed to do that.');
   else if (/duplicate key.*plot_number/i.test(msg)) toast('A plot with that number already exists.');
   else if (/plots_facing_check/i.test(msg)) toast('Facing must be North, South, East, West or Corner.');
   else toast('Could not save. Check your connection and try again.');
   console.warn(e);
 }
-function showLogin(mode){
-  ui.locked = true; mode = mode || 'in';
-  $('#overlay').innerHTML = `<div class="modal"><div class="box" data-stop="1" style="width:min(420px,100%)"><h2>${mode === 'in' ? 'Sign in to MyCoinMap' : 'Create your password'}</h2><p>${mode === 'in' ? 'Use the email your partner invited you with.' : 'Use the email you were invited with. A confirmation email will follow.'}</p>
-    <form id="loginForm" data-mode="${mode}" style="display:flex;flex-direction:column;gap:12px"><div class="field"><label>Email</label><input name="email" type="email" required autocomplete="email"></div><div class="field"><label>Password</label><input name="password" type="password" required minlength="6" autocomplete="${mode === 'in' ? 'current-password' : 'new-password'}"></div>
-    <div class="hint" id="loginMsg"></div><button class="btn primary" type="submit" style="justify-content:center">${mode === 'in' ? 'Sign in' : 'Create account'}</button></form>
-    <p class="hint" style="margin:14px 0 0;text-align:center">${mode === 'in' ? 'First time here? <a href="#" data-login-mode="up">Create your password</a>' : 'Already have a password? <a href="#" data-login-mode="in">Sign in</a>'}</p></div></div>`;
-  const f = $('#loginForm input'); if (f) f.focus();
+function showTeamCode(){
+  ui.locked = true;
+  $('#overlay').innerHTML = `<div class="modal"><div class="box" data-stop="1" style="width:min(380px,100%)"><h2>Enter team code</h2><p>Ask whoever set up MyCoinMap for the code.</p>
+    <form id="teamCodeForm" style="display:flex;gap:8px"><input name="code" required autocomplete="off" placeholder="Team code" style="height:40px;border:1px solid var(--line);border-radius:9px;padding:0 12px;flex:1"><button class="btn primary" type="submit">Continue</button></form>
+    <p class="hint" id="teamCodeMsg" style="margin-top:10px"></p></div></div>`;
+  const f = $('#teamCodeForm input'); if (f) f.focus();
 }
-function showNotPartner(){
-  ui.locked = true; const email = SESSION && SESSION.user ? SESSION.user.email : '';
-  $('#overlay').innerHTML = `<div class="modal"><div class="box" data-stop="1" style="width:min(460px,100%)"><h2>Not on the partner list yet</h2><p>You are signed in as <b>${esc(email)}</b>, but this email has not been added as a partner. Ask the owner to add it on the Team screen, then sign in again.</p><div class="form-foot"><button class="btn" id="signOutBtn" type="button">Sign out</button></div></div></div>`;
+function showWhoAreYou(){
+  ui.locked = true;
+  const names = state.team;
+  $('#overlay').innerHTML = `<div class="modal"><div class="box" data-stop="1" style="width:min(420px,100%)"><h2>Who's this?</h2><p>Pick your name, or add it if you're new. Everything you log is tagged with it.</p>
+    ${names.length ? `<div class="chips" style="margin-bottom:14px">${names.map(n=>`<button type="button" data-pick-me="${esc(n)}"><span class="av sm">${esc(initials(n))}</span>${esc(n)}</button>`).join('')}</div>` : ''}
+    <form id="whoForm" style="display:flex;gap:8px"><input name="name" required placeholder="Or type your name" autocomplete="off" style="height:40px;border:1px solid var(--line);border-radius:9px;padding:0 12px;flex:1"><button class="btn primary" type="submit">Continue</button></form></div></div>`;
+  const f = $('#whoForm input'); if (f) f.focus();
+}
+function showConnectError(msg){
+  ui.locked = true;
+  $('#overlay').innerHTML = `<div class="modal"><div class="box" data-stop="1" style="width:min(420px,100%)"><h2>Could not connect</h2><p>${esc(msg || 'Something went wrong.')}</p><div class="form-foot"><button class="btn primary" type="button" id="retryConnect">Try again</button></div></div></div>`;
+}
+async function pickMe(name){
+  name = (name || '').trim(); if (!name) return;
+  ME = name; try { localStorage.setItem('mycoinmap.me', name); } catch {}
+  if (!state.teamNames.includes(name)) await Store.addTeamName(name);
+  ui.locked = false; $('#overlay').innerHTML = '';
+  render(); Store.subscribe();
 }
 
 /* ===================== derived ===================== */
@@ -668,7 +690,7 @@ function renderSync(){
   const el = $('#sync');
   if (ME) el.innerHTML = `<span class="dot"></span><span>Live · Propity database</span>`;
   else el.innerHTML = `<span class="dot local"></span><span>Not signed in</span>`;
-  $('#meChip').innerHTML = ME ? `<span class="av">${esc(initials(ME))}</span><span><b>${esc(ME)}</b><small>${PARTNER&&PARTNER.role==='owner'?'Owner':'Partner'} · Sign out</small></span>` : `<span class="av">?</span><span><b>Not signed in</b><small>Sign in</small></span>`;
+  $('#meChip').innerHTML = ME ? `<span class="av">${esc(initials(ME))}</span><span><b>${esc(ME)}</b><small>Switch person</small></span>` : `<span class="av">?</span><span><b>Not set</b><small>Pick a name</small></span>`;
 }
 function render(){
   if (ui.projectId && !currentProject()) { ui.projectId = null; ui.view = 'home'; }
@@ -977,17 +999,15 @@ function projectForm(p){
 function vTeam(){
   const acts = allActs();
   const stat = (m, t) => acts.filter(a => a.by===m && (Array.isArray(t)?t.includes(a.type):a.type===t)).length;
-  const isOwner = PARTNER && PARTNER.role === 'owner';
-  const card = (m, meta, rm) => `<div class="member"><div class="h"><span class="av">${esc(initials(m))}</span><div><b>${esc(m)}</b><div class="hint">${meta}</div></div>${m===ME?'<span class="tag">you</span>':''}<div class="grow" style="flex:1"></div>${rm||''}</div>
+  const card = m => `<div class="member"><div class="h"><span class="av">${esc(initials(m))}</span><b>${esc(m)}</b>${m===ME?'<span class="tag">you</span>':''}<div class="grow" style="flex:1"></div><button class="btn sm ghost danger" data-rm-team="${esc(m)}" title="Remove">${I.x}</button></div>
       <div class="stats"><div class="stat"><div class="v">${stat(m,'call')}</div><div class="k">Calls</div></div><div class="stat"><div class="v">${stat(m,['text','whatsapp'])}</div><div class="k">Messages</div></div><div class="stat"><div class="v">${stat(m,'visited')}</div><div class="k">Visits</div></div>
       <div class="stat"><div class="v">${stat(m,'booked')}</div><div class="k">Booked</div></div><div class="stat"><div class="v">${stat(m,'deal_done')}</div><div class="k">Deals</div></div><div class="stat"><div class="v">${projLeads().filter(l=>l.assignedTo===m&&isOpen(l)).length}</div><div class="k">Open</div></div></div>
       <div class="hint" style="margin-top:10px;display:flex;justify-content:space-between"><span>Put in <b class="dim">${fmtINR(projMoney().filter(x=>x.paidBy===m).reduce((s,x)=>s+(Number(x.amount)||0),0))}</b></span>${currentProject()?`<a href="#" data-go="money" class="dim">ledger</a>`:''}</div></div>`;
-  return `<div class="card"><div class="card-h"><h2>Partners</h2><span class="muted">each signs in with their own email · ${currentProject()?`stats for ${esc(currentProject().name)}`:'stats across every project'}</span><div class="grow"></div><button class="btn sm" id="addMemberBtn">${I.plus}Add partner</button></div>
-    <div class="card-b"><div class="team">${(state.partners||[]).map(p => card(p.name, `${esc(p.email||'')} · ${p.role}`, isOwner && p.user_id !== (SESSION&&SESSION.user.id) ? `<button class="btn sm ghost danger" data-rm-partner="${p.user_id}" title="Remove">${I.x}</button>` : '')).join('')}
-      ${(state.invites||[]).map(i => card(i.name, `${esc(i.email)} · <span style="color:var(--warn)">invited, not signed up yet</span>`, `<button class="btn sm ghost danger" data-rm-invite="${esc(i.email)}" title="Cancel invite">${I.x}</button>`)).join('')}
-      ${(state.partners||[]).length||(state.invites||[]).length?'':'<div class="empty"><b>No partners yet</b>Invite the people who will share this board.</div>'}</div></div></div>
+  return `<div class="card"><div class="card-h"><h2>Team</h2><span class="muted">${currentProject()?`stats for ${esc(currentProject().name)}`:'stats across every project'}</span><div class="grow"></div><button class="btn sm" id="addMemberBtn">${I.plus}Add team member</button></div>
+    <div class="card-b"><div class="team">${state.team.map(card).join('')}
+      ${state.team.length?'':'<div class="empty"><b>No one added yet</b>Add the names of everyone on the team.</div>'}</div></div></div>
   <div class="card"><div class="card-h"><h2>Sharing & data</h2></div><div class="card-b" style="display:flex;flex-direction:column;gap:10px">
-    <p style="margin:0;color:var(--ink-2)">This board runs on the Propity website database. Invite a partner by email; they open this page, choose “Create your password”, and see everything live. Website enquiries and bookings arrive here as leads on their own.</p>
+    <p style="margin:0;color:var(--ink-2)">Everyone shares this same live board. Give them the link and the team code, they pick their name, and everything they log is tagged with it.</p>
     <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="exportBtn2">${I.download}Export all leads (CSV)</button>
       ${(state.leads.some(l=>l.sample)||state.money.some(m=>m.sample))?`<button class="btn danger" id="clearSamples">${I.x}Remove sample leads & money entries</button>`:''}</div></div></div>`;
 }
@@ -1407,7 +1427,7 @@ async function commitImport(f){
 
 /* ===================== events ===================== */
 document.addEventListener('click', async e => {
-  const t = e.target.closest('[data-view],[data-go],[data-open],[data-close],[data-act],[data-act-cancel],[data-vtab],[data-quick],[data-plot],[data-me],[data-seed],[data-rm-member],[data-del-plot],#importBtn,#importStop,#importRetry,[data-login-mode],#signOutBtn,[data-rm-partner],[data-rm-invite],[data-money],[data-del-money],[data-kind],#addMoneyBtn,#exportMoneyBtn,#addLeadBtn,#addPlotBtn,#addMemberBtn,#editLead,#deleteLead,#meChip,#exportBtn,#exportBtn2,#clearSamples,[data-stop],#brandBtn,#backHomeBtn,[data-open-project],#newProjectBtn,#newProjectCard,[data-edit-project],[data-del-project]');
+  const t = e.target.closest('[data-view],[data-go],[data-open],[data-close],[data-act],[data-act-cancel],[data-vtab],[data-quick],[data-plot],[data-me],[data-pick-me],[data-seed],[data-rm-member],[data-rm-team],[data-del-plot],#importBtn,#importStop,#importRetry,#retryConnect,[data-money],[data-del-money],[data-kind],#addMoneyBtn,#exportMoneyBtn,#addLeadBtn,#addPlotBtn,#addMemberBtn,#editLead,#deleteLead,#meChip,#exportBtn,#exportBtn2,#clearSamples,[data-stop],#brandBtn,#backHomeBtn,[data-open-project],#newProjectBtn,#newProjectCard,[data-edit-project],[data-del-project]');
   if (!t) return;
   if (t.dataset.stop) { e.stopPropagation(); return; }
   if (t.id === 'brandBtn' || t.id === 'backHomeBtn') { goHome(); return; }
@@ -1423,10 +1443,9 @@ document.addEventListener('click', async e => {
   if (t.dataset.vtab) { ui.visitsTab = t.dataset.vtab; render(); return; }
   if (t.dataset.quick) { e.stopPropagation(); ui.openLead = t.dataset.lead; ui.action = t.dataset.quick; render(); return; }
   if (t.dataset.plot) { openModal(plotSheet(plotById(t.dataset.plot))); return; }
-  if (t.dataset.loginMode) { e.preventDefault(); showLogin(t.dataset.loginMode); return; }
-  if (t.id === 'signOutBtn') { Store.signOut(); return; }
-  if (t.dataset.rmPartner) { if (await confirmModal('Remove this partner? They will no longer be able to open the board. Their logged activity stays.')) Store.removePartner(t.dataset.rmPartner); return; }
-  if (t.dataset.rmInvite) { Store.removeInvite(t.dataset.rmInvite); return; }
+  if (t.id === 'retryConnect') { location.reload(); return; }
+  if (t.dataset.pickMe) { pickMe(t.dataset.pickMe); return; }
+  if (t.dataset.rmTeam) { if (await confirmModal(`Remove ${t.dataset.rmTeam} from the team list? Their logged activity stays.`)) Store.removeTeamName(t.dataset.rmTeam); return; }
   if (t.dataset.delPlot) { if (await confirmModal('Delete this plot?')) { await Store.deletePlot(t.dataset.delPlot); closeOverlay(); } return; }
   if (t.id === 'importBtn') { importModal(); return; }
   if (t.id === 'setRateBtn') { const n = projPlots().filter(p => !ui.plotSite || (p.site||'Unnamed site')===ui.plotSite).length; openModal(`<h2>Set rate</h2><p>Applies to all <b>${n}</b> plots ${ui.plotSite?`in ${esc(ui.plotSite)}`:'in inventory'}. Sold plots keep their rate.</p><form id="rateForm"><div class="form-grid"><div class="field"><label>Rate (₹ per ${unitLabel()})</label><input name="rate" type="number" min="1" step="any" required placeholder="${unitKey()==='ganda'?'e.g. 900000':'e.g. 1500'}"></div><div class="field"><label>Apply to</label><select name="scope"><option value="unset">Only plots with no rate</option><option value="all">All available and booked plots</option></select></div></div><div class="form-foot"><button type="button" class="btn ghost" data-close="1">Cancel</button><button class="btn primary" type="submit">Apply</button></div></form>`); return; }
@@ -1440,14 +1459,10 @@ document.addEventListener('click', async e => {
   if (t.id === 'exportMoneyBtn') { exportCsv('money'); return; }
   if (t.id === 'addLeadBtn') { openModal(leadForm(null)); return; }
   if (t.id === 'addPlotBtn') { openModal(plotForm()); return; }
-  if (t.id === 'addMemberBtn') { openModal(`<h2>Add a partner</h2><p>Set a password yourself so they can sign in right away, or leave it blank to send an invite and let them choose their own.</p><form id="memberForm"><div class="form-grid">
-    <div class="field"><label>Name</label><input name="name" required placeholder="Partner's name"></div>
-    <div class="field"><label>Email</label><input name="email" type="email" required placeholder="partner@gmail.com"></div>
-    <div class="field span"><label>Password (optional)</label><input name="password" type="text" placeholder="Leave blank to invite them instead" minlength="6"></div>
-  </div><p class="hint" id="memberMsg"></p><div class="form-foot"><button type="button" class="btn ghost" data-close="1">Cancel</button><button class="btn primary" type="submit">Add partner</button></div></form>`); return; }
+  if (t.id === 'addMemberBtn') { openModal(`<h2>Add a team member</h2><p>Just their name — nothing else needed.</p><form id="memberForm" style="display:flex;gap:8px"><input name="name" required autocomplete="off" placeholder="Their name" style="height:40px;border:1px solid var(--line);border-radius:9px;padding:0 12px;flex:1"><button class="btn primary" type="submit">Add</button></form>`); return; }
   if (t.id === 'editLead') { openModal(leadForm(leadById(ui.openLead))); return; }
   if (t.id === 'deleteLead') { const l = leadById(ui.openLead); if (l && await confirmModal(`Delete ${l.name} and their whole history?`)) { const p = plotById(l.plotId); if (p && p.leadId===l.id && p.status!=='sold') await Store.putPlot({ ...p, status:'available', leadId:'' }); await Store.deleteLead(l.id); closeOverlay(); toast('Lead deleted'); } return; }
-  if (t.id === 'meChip') { if (ME && await confirmModal('Sign out of MyCoinMap on this device?')) Store.signOut(); return; }
+  if (t.id === 'meChip') { if (ME && await confirmModal('Switch to a different person on this device?')) { try { localStorage.removeItem('mycoinmap.me'); } catch {} ME = null; showWhoAreYou(); } return; }
   if (t.id === 'exportBtn' || t.id === 'exportBtn2') { exportCsv(); return; }
   if (t.id === 'clearSamples') { clearSamples(); return; }
 });
@@ -1459,7 +1474,7 @@ document.addEventListener('submit', async e => {
     const lead = old ? { ...old } : { id:uid(), projectId: ui.projectId, stage:'new', createdAt:new Date().toISOString(), activities:[], nextFollowUp:'', visitAt:'', plotId:'', tokenAmount:0, dealAmount:0 };
     Object.assign(lead, { name:v('name'), phone:v('phone'), source:v('source'), assignedTo:v('assignedTo'), interest:v('interest'), budget:Number(v('budget'))||0, notes:v('notes') });
     logAct(lead, { type: old ? 'edit' : 'created', note:'' });
-    if (lead.assignedTo && !state.team.includes(lead.assignedTo)) await Store.putTeam([...state.team, lead.assignedTo]);
+    if (lead.assignedTo && !state.team.includes(lead.assignedTo)) await Store.addTeamName(lead.assignedTo);
     await Store.putLead(lead);
     $('#overlay').innerHTML = ''; ui.openLead = lead.id; render(); toast(old ? 'Lead updated' : 'Lead added');
   } else if (f.id === 'actForm') {
@@ -1487,26 +1502,18 @@ document.addEventListener('submit', async e => {
     const old = f.dataset.id ? state.money.find(x => x.id === f.dataset.id) : null;
     const m = { ...(old || { id:uid(), projectId: ui.projectId, by:ME||'Unknown', createdAt:new Date().toISOString() }), kind:v('kind'), amount:Number(v('amount'))||0, paidBy:v('paidBy'), category:v('kind')==='investment'?'':v('category'), on:new Date(v('on')+'T12:00:00').toISOString(), leadId:v('leadId'), plotId:v('plotId'), note:v('note') };
     if (!m.amount) return toast('Enter an amount.');
-    if (m.paidBy && !state.team.includes(m.paidBy)) await Store.putTeam([...state.team, m.paidBy]);
+    if (m.paidBy && !state.team.includes(m.paidBy)) await Store.addTeamName(m.paidBy);
     await Store.putMoney(m); closeOverlay(); toast(old ? 'Entry updated' : `${fmtINR(m.amount)} recorded for ${m.paidBy}`);
-  } else if (f.id === 'loginForm') {
-    const email = f.elements.email.value.trim(), password = f.elements.password.value; const msg = $('#loginMsg'); msg.textContent = 'Please wait…';
-    if (f.dataset.mode === 'in') { const { error } = await sb.auth.signInWithPassword({ email, password }); if (error) msg.textContent = /invalid/i.test(error.message) ? 'Wrong email or password.' : error.message; }
-    else { const { data, error } = await sb.auth.signUp({ email, password }); if (error) msg.textContent = error.message; else if (data.session) location.reload(); else msg.textContent = 'Check your email and open the confirmation link, then sign in here.'; }
+  } else if (f.id === 'teamCodeForm') {
+    const code = f.elements.code.value.trim(); const msg = $('#teamCodeMsg');
+    if (code !== TEAM_CODE) { if (msg) msg.textContent = 'That code is not right.'; return; }
+    try { localStorage.setItem('mycoinmap.unlocked', '1'); } catch {}
+    if (msg) msg.textContent = 'Connecting…';
+    await Store.unlock();
+  } else if (f.id === 'whoForm') {
+    await pickMe(f.elements.name.value);
   } else if (f.id === 'memberForm') {
-    const n = f.elements.name.value.trim(), em = f.elements.email.value.trim(), pw = (f.elements.password.value || '').trim();
-    if (!n || !em) return;
-    const msg = $('#memberMsg');
-    if (!pw) { await Store.invite(n, em); closeOverlay(); toast(`${n} invited`); return; }
-    if (pw.length < 6) { if (msg) msg.textContent = 'Password must be at least 6 characters.'; return; }
-    if (msg) msg.textContent = 'Creating the account…';
-    try {
-      const { data: { session: cur } } = await sb.auth.getSession();
-      const res = await fetch('/api/mycoinmap/create-partner', { method:'POST', headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${cur && cur.access_token || ''}` }, body: JSON.stringify({ name:n, email:em, password:pw }) });
-      const out = await res.json().catch(() => ({}));
-      if (!res.ok) { if (msg) msg.textContent = out.error || 'Could not create the account.'; return; }
-      await Store.loadAll(); render(); closeOverlay(); toast(`${n} can sign in now with ${em}`);
-    } catch { if (msg) msg.textContent = 'Could not reach the server. Check your connection and try again.'; }
+    const n = f.elements.name.value.trim(); if (!n) return; await Store.addTeamName(n); closeOverlay(); toast(`${n} added`);
   } else if (f.id === 'projectForm') {
     const v = n => f.elements[n].value.trim();
     const id = f.dataset.id || uid(); const old = f.dataset.id ? state.projects.find(x => x.id === id) : null;
