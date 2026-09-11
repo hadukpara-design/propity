@@ -982,7 +982,7 @@ function vTeam(){
       <div class="stats"><div class="stat"><div class="v">${stat(m,'call')}</div><div class="k">Calls</div></div><div class="stat"><div class="v">${stat(m,['text','whatsapp'])}</div><div class="k">Messages</div></div><div class="stat"><div class="v">${stat(m,'visited')}</div><div class="k">Visits</div></div>
       <div class="stat"><div class="v">${stat(m,'booked')}</div><div class="k">Booked</div></div><div class="stat"><div class="v">${stat(m,'deal_done')}</div><div class="k">Deals</div></div><div class="stat"><div class="v">${projLeads().filter(l=>l.assignedTo===m&&isOpen(l)).length}</div><div class="k">Open</div></div></div>
       <div class="hint" style="margin-top:10px;display:flex;justify-content:space-between"><span>Put in <b class="dim">${fmtINR(projMoney().filter(x=>x.paidBy===m).reduce((s,x)=>s+(Number(x.amount)||0),0))}</b></span>${currentProject()?`<a href="#" data-go="money" class="dim">ledger</a>`:''}</div></div>`;
-  return `<div class="card"><div class="card-h"><h2>Partners</h2><span class="muted">each signs in with their own email · ${currentProject()?`stats for ${esc(currentProject().name)}`:'stats across every project'}</span><div class="grow"></div><button class="btn sm" id="addMemberBtn">${I.plus}Invite partner</button></div>
+  return `<div class="card"><div class="card-h"><h2>Partners</h2><span class="muted">each signs in with their own email · ${currentProject()?`stats for ${esc(currentProject().name)}`:'stats across every project'}</span><div class="grow"></div><button class="btn sm" id="addMemberBtn">${I.plus}Add partner</button></div>
     <div class="card-b"><div class="team">${(state.partners||[]).map(p => card(p.name, `${esc(p.email||'')} · ${p.role}`, isOwner && p.user_id !== (SESSION&&SESSION.user.id) ? `<button class="btn sm ghost danger" data-rm-partner="${p.user_id}" title="Remove">${I.x}</button>` : '')).join('')}
       ${(state.invites||[]).map(i => card(i.name, `${esc(i.email)} · <span style="color:var(--warn)">invited, not signed up yet</span>`, `<button class="btn sm ghost danger" data-rm-invite="${esc(i.email)}" title="Cancel invite">${I.x}</button>`)).join('')}
       ${(state.partners||[]).length||(state.invites||[]).length?'':'<div class="empty"><b>No partners yet</b>Invite the people who will share this board.</div>'}</div></div></div>
@@ -1440,7 +1440,11 @@ document.addEventListener('click', async e => {
   if (t.id === 'exportMoneyBtn') { exportCsv('money'); return; }
   if (t.id === 'addLeadBtn') { openModal(leadForm(null)); return; }
   if (t.id === 'addPlotBtn') { openModal(plotForm()); return; }
-  if (t.id === 'addMemberBtn') { openModal(`<h2>Invite a partner</h2><p>They open this same page, choose “Create your password” with this email, and get full access.</p><form id="memberForm"><div class="form-grid"><div class="field"><label>Name</label><input name="name" required placeholder="Partner's name"></div><div class="field"><label>Email</label><input name="email" type="email" required placeholder="partner@gmail.com"></div></div><div class="form-foot"><button type="button" class="btn ghost" data-close="1">Cancel</button><button class="btn primary" type="submit">Invite</button></div></form>`); return; }
+  if (t.id === 'addMemberBtn') { openModal(`<h2>Add a partner</h2><p>Set a password yourself so they can sign in right away, or leave it blank to send an invite and let them choose their own.</p><form id="memberForm"><div class="form-grid">
+    <div class="field"><label>Name</label><input name="name" required placeholder="Partner's name"></div>
+    <div class="field"><label>Email</label><input name="email" type="email" required placeholder="partner@gmail.com"></div>
+    <div class="field span"><label>Password (optional)</label><input name="password" type="text" placeholder="Leave blank to invite them instead" minlength="6"></div>
+  </div><p class="hint" id="memberMsg"></p><div class="form-foot"><button type="button" class="btn ghost" data-close="1">Cancel</button><button class="btn primary" type="submit">Add partner</button></div></form>`); return; }
   if (t.id === 'editLead') { openModal(leadForm(leadById(ui.openLead))); return; }
   if (t.id === 'deleteLead') { const l = leadById(ui.openLead); if (l && await confirmModal(`Delete ${l.name} and their whole history?`)) { const p = plotById(l.plotId); if (p && p.leadId===l.id && p.status!=='sold') await Store.putPlot({ ...p, status:'available', leadId:'' }); await Store.deleteLead(l.id); closeOverlay(); toast('Lead deleted'); } return; }
   if (t.id === 'meChip') { if (ME && await confirmModal('Sign out of MyCoinMap on this device?')) Store.signOut(); return; }
@@ -1490,7 +1494,19 @@ document.addEventListener('submit', async e => {
     if (f.dataset.mode === 'in') { const { error } = await sb.auth.signInWithPassword({ email, password }); if (error) msg.textContent = /invalid/i.test(error.message) ? 'Wrong email or password.' : error.message; }
     else { const { data, error } = await sb.auth.signUp({ email, password }); if (error) msg.textContent = error.message; else if (data.session) location.reload(); else msg.textContent = 'Check your email and open the confirmation link, then sign in here.'; }
   } else if (f.id === 'memberForm') {
-    const n = f.elements.name.value.trim(), em = f.elements.email.value.trim(); if (!n || !em) return; await Store.invite(n, em); closeOverlay(); toast(`${n} invited`);
+    const n = f.elements.name.value.trim(), em = f.elements.email.value.trim(), pw = (f.elements.password.value || '').trim();
+    if (!n || !em) return;
+    const msg = $('#memberMsg');
+    if (!pw) { await Store.invite(n, em); closeOverlay(); toast(`${n} invited`); return; }
+    if (pw.length < 6) { if (msg) msg.textContent = 'Password must be at least 6 characters.'; return; }
+    if (msg) msg.textContent = 'Creating the account…';
+    try {
+      const { data: { session: cur } } = await sb.auth.getSession();
+      const res = await fetch('/api/mycoinmap/create-partner', { method:'POST', headers:{ 'Content-Type':'application/json', Authorization:`Bearer ${cur && cur.access_token || ''}` }, body: JSON.stringify({ name:n, email:em, password:pw }) });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok) { if (msg) msg.textContent = out.error || 'Could not create the account.'; return; }
+      await Store.loadAll(); render(); closeOverlay(); toast(`${n} can sign in now with ${em}`);
+    } catch { if (msg) msg.textContent = 'Could not reach the server. Check your connection and try again.'; }
   } else if (f.id === 'projectForm') {
     const v = n => f.elements[n].value.trim();
     const id = f.dataset.id || uid(); const old = f.dataset.id ? state.projects.find(x => x.id === id) : null;
