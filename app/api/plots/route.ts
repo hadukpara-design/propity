@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient as createSessionClient } from '@/lib/supabase/server'
+import { isAdminEmail } from '@/lib/admin-access'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -34,7 +35,7 @@ export async function PATCH(req: Request) {
 
   const session = await createSessionClient()
   const { data: { user } } = await session.auth.getUser()
-  if (!user) {
+  if (!user || !isAdminEmail(user.email)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
