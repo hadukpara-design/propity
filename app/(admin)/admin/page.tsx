@@ -1,5 +1,4 @@
 import { createAdminClient } from '@/lib/supabase/server'
-import AdminNav from './AdminNav'
 import Link from 'next/link'
 import { BookOpen, CheckCircle2, IndianRupee, Home, TrendingUp, MessageSquare } from 'lucide-react'
 import { formatDate } from '@/lib/utils'

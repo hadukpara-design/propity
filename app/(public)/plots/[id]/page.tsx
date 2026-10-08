@@ -1,3 +1,5 @@
+import { cache } from 'react'
+import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { gandaToSqft } from '@/lib/utils'
 import Link from 'next/link'
@@ -5,14 +7,32 @@ import { notFound } from 'next/navigation'
 import Badge from '@/components/ui/Badge'
 import { MapPin, Home, ArrowLeft, Phone, CheckCircle2 } from 'lucide-react'
 
-export default async function PlotDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
+const getPlot = cache(async (id: string) => {
   const supabase = await createClient()
-  const { data: plot } = await supabase
+  const { data } = await supabase
     .from('plots')
-    .select('*')
+    .select('plot_number, ganda_size, area_sqft, status')
     .eq('plot_number', parseInt(id))
     .single()
+  return data
+})
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const plot = await getPlot(id)
+  if (!plot) return { title: 'Plot not found | Propity Realty' }
+
+  const sqft = plot.area_sqft ?? gandaToSqft(plot.ganda_size)
+  const availability = plot.status === 'available' ? 'Available to book now.' : 'Currently not available.'
+  return {
+    title: `Plot #${plot.plot_number} — ${plot.ganda_size} Ganda (${sqft.toLocaleString()} sq ft) | 17 Kani Township, Agartala`,
+    description: `Residential plot #${plot.plot_number} in the 17 Kani Township, Laxmilunga, Agartala: ${plot.ganda_size} Ganda (about ${sqft.toLocaleString()} sq ft). ${availability}`,
+  }
+}
+
+export default async function PlotDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const plot = await getPlot(id)
 
   if (!plot) notFound()
 

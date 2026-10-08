@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import AdminNav from './admin/AdminNav'
+
+export const metadata: Metadata = {
+  title: 'Admin | Propity Realty',
+  robots: { index: false, follow: false },
+}
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -34,7 +34,7 @@ export default async function PlotsPage() {
       {/* Header */}
       <div className="bg-[#1B4332] pt-24 pb-12 px-4">
         <div className="max-w-7xl mx-auto">
-          <p className="text-[#C9A84C] text-sm font-bold tracking-widest uppercase mb-2">17 Kani Township · Lembucherra, Agartala</p>
+          <p className="text-[#C9A84C] text-sm font-bold tracking-widest uppercase mb-2">17 Kani Township · Laxmilunga, Agartala</p>
           <h1 className="font-[family-name:var(--font-playfair)] text-4xl md:text-5xl font-bold text-white mb-2">
             Browse All 63 Plots
           </h1>
