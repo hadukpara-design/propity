@@ -9,25 +9,46 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Database not configured. Please call us at +91 81329 53235 to book.' }, { status: 503 })
   }
 
+  let body: unknown
+  try {
+    body = await req.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+  }
+
+  const parsed = bookingSchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.issues[0]?.message ?? 'Please check your details' }, { status: 400 })
+  }
+  const data = parsed.data
+
   try {
     const { createClient } = await import('@supabase/supabase-js')
     const supabase = createClient(supabaseUrl, supabaseKey)
 
-    const body = await req.json()
-    const data = bookingSchema.parse(body)
-
-    const { data: plot, error: plotError } = await supabase
+    // Claim the plot in a single conditional update so two simultaneous
+    // bookings can never both succeed for the same plot.
+    const { data: claimed, error: claimError } = await supabase
       .from('plots')
-      .select('id, status, ganda_size')
+      .update({ status: 'booked' })
       .eq('plot_number', data.plot_number)
-      .single()
+      .eq('status', 'available')
+      .select('id')
 
-    if (plotError || !plot) {
-      return NextResponse.json({ error: 'Plot not found' }, { status: 404 })
+    if (claimError) throw claimError
+
+    if (!claimed || claimed.length === 0) {
+      const { data: existing } = await supabase
+        .from('plots')
+        .select('id')
+        .eq('plot_number', data.plot_number)
+        .maybeSingle()
+      return existing
+        ? NextResponse.json({ error: 'This plot is no longer available' }, { status: 409 })
+        : NextResponse.json({ error: 'Plot not found' }, { status: 404 })
     }
-    if (plot.status !== 'available') {
-      return NextResponse.json({ error: 'This plot is no longer available' }, { status: 409 })
-    }
+
+    const plot = claimed[0]
 
     const { error: bookingError } = await supabase.from('bookings').insert({
       plot_id: plot.id,
@@ -41,19 +62,17 @@ export async function POST(req: NextRequest) {
       status: 'confirmed',
     })
 
-    if (bookingError) throw bookingError
-
-    const { error: updateError } = await supabase
-      .from('plots')
-      .update({ status: 'booked' })
-      .eq('id', plot.id)
-
-    if (updateError) throw updateError
+    if (bookingError) {
+      await supabase.from('plots').update({ status: 'available' }).eq('id', plot.id)
+      throw bookingError
+    }
 
     return NextResponse.json({ success: true, plot_number: data.plot_number })
   } catch (err: unknown) {
     console.error('Booking error:', err)
-    const message = err instanceof Error ? err.message : 'Booking failed'
-    return NextResponse.json({ error: message }, { status: 400 })
+    return NextResponse.json(
+      { error: 'Booking could not be completed. Please call us at +91 81329 53235.' },
+      { status: 500 }
+    )
   }
 }

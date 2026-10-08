@@ -1,3 +1,4 @@
+import { createClient as createServiceClient } from '@supabase/supabase-js'
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/server'
 import BookingCard from '@/components/features/BookingCard'
 import ProgressBar from '@/components/ui/ProgressBar'
@@ -12,20 +13,32 @@ export const metadata: Metadata = {
 
 export const revalidate = 30
 
+async function getPublicBookings(): Promise<PublicBooking[]> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+  if (!url || !serviceKey) return []
+
+  // Read with the server-only key and a fixed column list, so customer phone
+  // numbers and emails never have to be readable through the public API key.
+  const supabase = createServiceClient(url, serviceKey)
+  const { data } = await supabase
+    .from('bookings')
+    .select('customer_name, plot_number, customer_city, created_at')
+    .eq('status', 'confirmed')
+    .order('created_at', { ascending: false })
+  return (data ?? []) as PublicBooking[]
+}
+
 async function getData() {
   if (!isSupabaseConfigured) return { bookings: [], totalPlots: 63, bookedCount: 0, availableCount: 63 }
   try {
     const supabase = await createClient()
-    const [bookingsRes, plotsRes] = await Promise.all([
-      supabase
-        .from('bookings')
-        .select('customer_name, plot_number, customer_city, created_at')
-        .eq('status', 'confirmed')
-        .order('created_at', { ascending: false }),
+    const [bookings, plotsRes] = await Promise.all([
+      getPublicBookings(),
       supabase.from('plots').select('status'),
     ])
     return {
-      bookings: (bookingsRes.data ?? []) as PublicBooking[],
+      bookings,
       totalPlots: plotsRes.data?.length ?? 63,
       bookedCount: plotsRes.data?.filter(p => p.status === 'booked').length ?? 0,
       availableCount: plotsRes.data?.filter(p => p.status === 'available').length ?? 63,
