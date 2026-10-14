@@ -7,7 +7,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Book a Residential Plot | 17 Kani Township, Agartala | Propity Realty',
-  description: 'Secure your plot in the 17 Kani Residential Township, Laxmilunga, Agartala with a ₹2,00,000 token amount. Call or WhatsApp +91 81329 53235.',
+  description: 'Secure your plot in the 17 Kani Residential Township, Laxmilunga, Agartala with a ₹1,00,000 token amount. Call or WhatsApp +91 81329 53235.',
   keywords: ['book plot Agartala', 'reserve land Laxmilunga', 'plot booking Tripura', '17 Kani township booking'],
 }
 
