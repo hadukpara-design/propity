@@ -74,11 +74,11 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto">
           <SectionHeader label="Nearby Landmarks" title="Prime Growth Drivers" centered />
           <div className="grid md:grid-cols-2 gap-6 mt-10">
-            {/* Taj Vivanta */}
+            {/* 5-star hotel */}
             <div className="rounded-2xl overflow-hidden shadow-md">
               <Image
-                src="/images/taj-vivanta.png"
-                alt="Taj Vivanta 5-Star Hotel (Under Construction)"
+                src="/images/five-star-hotel.png"
+                alt="5-Star Hotel (Under Construction)"
                 width={800} height={600}
                 className="w-full h-auto"
               />

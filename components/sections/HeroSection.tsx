@@ -64,7 +64,7 @@ export default function HeroSection({ availableCount }: HeroSectionProps) {
           <p className="text-white/70 text-base md:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
             Strategically located right beside the <strong className="text-white">Western Bypass (under construction)</strong>.
             The Western Bypass will create a major connectivity corridor linking Lembucherra to Tripura University area,
-            with the <strong className="text-white">Taj Vivanta 5-Star Hotel located in between</strong>.
+            with a <strong className="text-white">5-Star Hotel located in between</strong>.
           </p>
 
           {/* Stat chips */}

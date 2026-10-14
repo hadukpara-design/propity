@@ -84,7 +84,7 @@ export default async function PlotDetailPage({ params }: { params: Promise<{ id:
                 {[
                   '🏙️ 12 min to Agartala City Center',
                   '✈️ 13 min to Maharaja Bir Bikram Airport',
-                  '🏨 Near Taj Vivanta 5-Star Hotel',
+                  '🏨 Near a 5-Star Hotel',
                   '🏏 Adjacent to upcoming IPL Stadium',
                   '📚 5 min to Lembucherra Education Hub',
                   '🛣️ Adjacent to Western Bypass (under construction)',

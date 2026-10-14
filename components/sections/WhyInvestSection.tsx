@@ -3,7 +3,7 @@ import SectionHeader from '@/components/ui/SectionHeader'
 const reasons = [
   { icon: '🏙️', title: '12 Min to Agartala Town', desc: 'Quick access to Agartala city center, markets, and government offices.' },
   { icon: '✈️', title: '13 Min to Airport', desc: 'Maharaja Bir Bikram Airport is just a short drive away.' },
-  { icon: '🏨', title: 'Taj Vivanta 5-Star Hotel', desc: 'Under construction nearby — will be Agartala\'s premier 5-star hotel, boosting area prestige.' },
+  { icon: '🏨', title: '5-Star Hotel', desc: 'Under construction nearby — will be Agartala\'s premier 5-star hotel, boosting area prestige.' },
   { icon: '🏏', title: 'Upcoming IPL Stadium', desc: 'Under construction — major sports infrastructure driving real estate appreciation.' },
   { icon: '📚', title: '5 Min — Education Hub', desc: 'Lembucherra: Holy Cross, Rajarshi, Agriculture, Fisheries, ICFAI, Central Sanskrit University & more.' },
   { icon: '🛣️', title: 'Western Bypass Adjacent', desc: 'Strategically located right beside the Western Bypass (under construction) — major connectivity corridor.' },

@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Location & Directions | 17 Kani Township, Laxmilunga, Agartala',
-  description: '12 minutes from Agartala, 13 minutes from the airport, 5 minutes from Lembucherra — beside the Western Bypass and Taj Vivanta. Get directions to the site.',
+  description: '12 minutes from Agartala, 13 minutes from the airport, 5 minutes from Lembucherra — beside the Western Bypass and an upcoming 5-star hotel. Get directions to the site.',
   keywords: ['Laxmilunga location', 'directions Agartala plots', '17 Kani township address', 'Western Bypass Agartala land'],
 }
 
@@ -24,7 +24,7 @@ export default function LocationPage() {
         <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-200 mb-6">
           <img
             src="/images/location-map.png"
-            alt="17 Kani Residential Township Location — Agartala, Tripura showing Airport, Taj Vivanta, IPL Stadium, Tripura University, Lembucherra Education Hub, Western Bypass Road"
+            alt="17 Kani Residential Township Location — Agartala, Tripura showing Airport, 5-Star Hotel, IPL Stadium, Tripura University, Lembucherra Education Hub, Western Bypass Road"
             className="w-full"
           />
         </div>
@@ -99,7 +99,7 @@ export default function LocationPage() {
             {[
               { place: 'Agartala City Center', distance: '~12 min', km: '~8 km' },
               { place: 'Maharaja Bir Bikram Airport', distance: '~13 min', km: '~10 km' },
-              { place: 'Taj Vivanta 5-Star Hotel (Under Construction)', distance: '~10 min', km: '~7 km' },
+              { place: '5-Star Hotel (Under Construction)', distance: '~10 min', km: '~7 km' },
               { place: 'Lembucherra Education Hub', distance: '~5 min', km: '~3 km' },
               { place: 'Holy Cross College', distance: '~5 min', km: '~3.5 km' },
               { place: 'Rajarshi College', distance: '~6 min', km: '~4 km' },
