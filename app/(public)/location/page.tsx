@@ -76,7 +76,7 @@ export default function LocationPage() {
             {
               icon: Phone,
               title: 'Contact',
-              content: '+91 81329 53235\nhadukpara@gmail.com',
+              content: '+91 81329 53235\ntripurarealstate@gmail.com',
               isPhone: true,
             },
             {

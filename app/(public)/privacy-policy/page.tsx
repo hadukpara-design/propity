@@ -176,7 +176,7 @@ export default function PrivacyPolicyPage() {
               <p>17 Kani Residential Township, Laxmilunga</p>
               <p>Agartala, Tripura — 799101</p>
               <p>Phone: <a href="tel:8132953235" className="text-[#1B4332] font-semibold">+91 81329 53235</a></p>
-              <p>Email: <a href="mailto:hadukpara@gmail.com" className="text-[#1B4332] font-semibold">hadukpara@gmail.com</a></p>
+              <p>Email: <a href="mailto:tripurarealstate@gmail.com" className="text-[#1B4332] font-semibold">tripurarealstate@gmail.com</a></p>
             </div>
           </section>
 
