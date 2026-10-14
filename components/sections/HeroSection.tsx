@@ -10,7 +10,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ availableCount }: HeroSectionProps) {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-12 pb-24 md:pt-14">
+    <section className="relative md:min-h-screen flex items-center justify-center overflow-hidden pt-12 pb-16 md:pt-14 md:pb-24">
       {/* Background — real aerial photo of the land */}
       <div className="absolute inset-0">
         <img
@@ -21,7 +21,7 @@ export default function HeroSection({ availableCount }: HeroSectionProps) {
         {/* Dark overlay so text is readable */}
         <div className="absolute inset-0 bg-black/55" />
         {/* Gradient overlay bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-[#F8F5EF] to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-16 md:h-24 bg-gradient-to-t from-[#F8F5EF] to-transparent" />
       </div>
 
       {/* For Sale Badge */}
@@ -39,7 +39,7 @@ export default function HeroSection({ availableCount }: HeroSectionProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="flex items-center justify-center gap-2 mb-6">
+          <div className="flex items-center justify-center gap-2 mb-4 md:mb-6">
             <MapPin className="w-4 h-4 text-[#C9A84C]" />
             <span className="text-[#C9A84C] text-sm font-semibold tracking-widest uppercase">
               Laxmilunga · Agartala · Tripura
@@ -51,7 +51,7 @@ export default function HeroSection({ availableCount }: HeroSectionProps) {
             🌿 Surrounded by Tea Garden
           </div>
 
-          <h1 className="font-[family-name:var(--font-playfair)] text-5xl md:text-7xl font-bold text-white leading-tight mb-4">
+          <h1 className="font-[family-name:var(--font-playfair)] text-4xl sm:text-5xl md:text-7xl font-bold text-white leading-tight mb-3 md:mb-4">
             17 Kani
             <br />
             <span className="text-[#C9A84C]">Residential Township</span>
@@ -61,38 +61,38 @@ export default function HeroSection({ availableCount }: HeroSectionProps) {
             2,93,760 Sq. Feet · 63 Plots
           </p>
 
-          <p className="text-white/70 text-base md:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+          <p className="text-white/70 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-6 md:mb-8 leading-relaxed">
             Strategically located right beside the <strong className="text-white">Western Bypass (under construction)</strong>.
             The Western Bypass will create a major connectivity corridor linking Lembucherra to Tripura University area,
             with a <strong className="text-white">5-Star Hotel located in between</strong>.
           </p>
 
           {/* Stat chips */}
-          <div className="flex flex-wrap justify-center gap-3 mb-10">
+          <div className="grid grid-cols-4 gap-2 mb-6 sm:flex sm:flex-wrap sm:justify-center sm:gap-3 md:mb-10">
             {[
               { label: '12 min', sub: 'Agartala' },
               { label: '13 min', sub: 'Airport' },
               { label: '5 min', sub: 'Lembucherra' },
               { label: '63', sub: 'Total Plots' },
             ].map(({ label, sub }) => (
-              <div key={sub} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-2 text-center">
-                <div className="text-[#C9A84C] font-bold text-lg">{label}</div>
-                <div className="text-white/60 text-xs">{sub}</div>
+              <div key={sub} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-1.5 py-1.5 sm:px-4 sm:py-2 text-center">
+                <div className="text-[#C9A84C] font-bold text-base sm:text-lg">{label}</div>
+                <div className="text-white/60 text-[10px] sm:text-xs leading-tight">{sub}</div>
               </div>
             ))}
           </div>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
             <Link
               href="/book"
-              className="inline-flex items-center gap-2 bg-[#C9A84C] text-[#1A1A2E] font-bold px-8 py-4 rounded-xl text-lg hover:bg-[#E8C96A] transition-colors shadow-lg"
+              className="inline-flex items-center gap-2 bg-[#C9A84C] text-[#1A1A2E] font-bold px-8 py-3 md:py-4 rounded-xl text-base md:text-lg hover:bg-[#E8C96A] transition-colors shadow-lg"
             >
               Book Your Plot <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
               href="/plots"
-              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white font-bold px-8 py-4 rounded-xl text-lg hover:bg-white/20 transition-colors"
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white font-bold px-8 py-3 md:py-4 rounded-xl text-base md:text-lg hover:bg-white/20 transition-colors"
             >
               View Available Plots
               <span className="bg-[#C9A84C] text-[#1A1A2E] text-sm font-bold px-2 py-0.5 rounded-full">
@@ -101,7 +101,7 @@ export default function HeroSection({ availableCount }: HeroSectionProps) {
             </Link>
           </div>
 
-          <div className="mt-6">
+          <div className="mt-4 md:mt-6">
             <a
               href="tel:8132953235"
               className="inline-flex items-center gap-2 text-white/90 hover:text-white text-sm font-semibold transition-colors drop-shadow"

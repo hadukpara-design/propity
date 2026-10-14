@@ -7,7 +7,7 @@ export default function VideoSection() {
   if (videos.length === 0) return null
 
   return (
-    <section aria-label="Property videos" className="py-10 md:py-14 px-4 bg-white">
+    <section aria-label="Property videos" className="pt-4 pb-10 md:py-14 px-4 bg-[#F8F5EF]">
       <div className="max-w-7xl mx-auto">
         <div
           className={cn(
