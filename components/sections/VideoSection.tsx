@@ -1,4 +1,3 @@
-import SectionHeader from '@/components/ui/SectionHeader'
 import YouTubeLite from '@/components/ui/YouTubeLite'
 import { getPropertyVideos } from '@/lib/property-videos'
 import { cn } from '@/lib/utils'
@@ -8,14 +7,8 @@ export default function VideoSection() {
   if (videos.length === 0) return null
 
   return (
-    <section className="py-16 px-4 bg-white">
+    <section aria-label="Property videos" className="py-10 md:py-14 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
-        <SectionHeader
-          label="Property Videos"
-          title="See the Land for Yourself"
-          subtitle="Watch the 17 Kani Residential Township in Laxmilunga, Agartala."
-          centered
-        />
         <div
           className={cn(
             'grid gap-6',
