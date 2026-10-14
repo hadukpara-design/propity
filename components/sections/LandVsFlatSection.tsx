@@ -6,7 +6,7 @@ export default function LandVsFlatSection() {
       <div className="max-w-7xl mx-auto">
         <div className="rounded-2xl overflow-hidden shadow-md">
           <Image
-            src="/images/land-vs-flat.png"
+            src="/images/land-vs-flat.jpg"
             alt="Buying a Flat VS Buying Land — 100% Land Ownership, Rental Income, Future Appreciation 3X-4X"
             width={1400} height={900}
             className="w-full h-auto"

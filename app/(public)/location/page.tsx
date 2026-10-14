@@ -24,7 +24,7 @@ export default function LocationPage() {
         {/* Location Map — from brochure */}
         <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-200 mb-6">
           <Image
-            src="/images/location-map.png"
+            src="/images/location-map.jpg"
             alt="17 Kani Residential Township Location — Agartala, Tripura showing Airport, 5-Star Hotel, IPL Stadium, Tripura University, Lembucherra Education Hub, Western Bypass Road"
             width={6250}
             height={4419}

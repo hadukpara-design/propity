@@ -7,7 +7,7 @@ export default function CTABand() {
       <div className="max-w-7xl mx-auto">
         <Link href="/book" className="block rounded-2xl overflow-hidden shadow-md hover:opacity-95 transition-opacity cursor-pointer">
           <Image
-            src="/images/book-cta.png"
+            src="/images/book-cta.jpg"
             alt="Book Your Dream Plot Today — Only ₹1,00,000. Call & WhatsApp: 8132953235."
             width={1400} height={500}
             className="w-full h-auto"

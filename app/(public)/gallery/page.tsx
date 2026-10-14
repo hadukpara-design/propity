@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 
 const items = [
   {
     id: 1,
-    src: '/images/aerial-land.png',
+    src: '/images/aerial-land.jpg',
     label: 'Aerial View — 17 Kani Township',
     desc: 'Drone shot of the actual land with Western Bypass (Under Construction) visible. Tea gardens surrounding the site.',
     category: 'Site',
@@ -14,7 +15,7 @@ const items = [
   },
   {
     id: 2,
-    src: '/images/location-map.png',
+    src: '/images/location-map.jpg',
     label: 'Location Map',
     desc: 'All major landmarks — Airport, 5-Star Hotel, IPL Stadium, Tripura University, Lembucherra Education Hub, Western Bypass Road.',
     category: 'Maps',
@@ -22,7 +23,7 @@ const items = [
   },
   {
     id: 3,
-    src: '/images/site-plan-img.png',
+    src: '/images/site-plan-img.jpg',
     label: 'Official Site Layout Plan',
     desc: 'Survey drawing showing all 63 residential plots. Total land: 17 Kani. Roads: 44 Ganda.',
     category: 'Site Plan',
@@ -30,7 +31,7 @@ const items = [
   },
   {
     id: 4,
-    src: '/images/five-star-hotel.png',
+    src: '/images/five-star-hotel.jpg',
     label: '5-Star Hotel (Under Construction)',
     desc: 'Under Construction — Agartala\'s upcoming premier 5-star hotel located nearby on Western Bypass road.',
     category: 'Landmarks',
@@ -38,7 +39,7 @@ const items = [
   },
   {
     id: 5,
-    src: '/images/ipl-stadium.png',
+    src: '/images/ipl-stadium.jpg',
     label: 'Upcoming IPL Stadium',
     desc: 'Under Construction — State-of-the-art cricket stadium driving massive real estate appreciation in the area.',
     category: 'Landmarks',
@@ -46,7 +47,7 @@ const items = [
   },
   {
     id: 6,
-    src: '/images/education-hub.png',
+    src: '/images/education-hub.jpg',
     label: 'Lembucherra Education Hub',
     desc: 'Holy Cross College, Rajarshi College, Agriculture College, Fisheries College, Central Sanskrit University, ICFAI University and several schools.',
     category: 'Education',
@@ -54,7 +55,7 @@ const items = [
   },
   {
     id: 7,
-    src: '/images/tuda-master-plan.png',
+    src: '/images/tuda-master-plan.jpg',
     label: 'TUDA Master Plan — Agartala Satellite Town',
     desc: 'Tripura Urban Planning & Development Authority — Laxmilunga Special Planning Area. 3D View of Draft Master Plan.',
     category: 'Master Plan',
@@ -62,7 +63,7 @@ const items = [
   },
   {
     id: 8,
-    src: '/images/land-vs-flat.png',
+    src: '/images/land-vs-flat.jpg',
     label: 'Why Buy Land Instead of a Flat',
     desc: 'Plot: ₹30 Lakhs. House Construction: ₹30–40 Lakhs. 100% Land Ownership. 3X–4X appreciation after Western Bypass completion. Generational Wealth.',
     category: 'Investment',
@@ -70,7 +71,7 @@ const items = [
   },
   {
     id: 9,
-    src: '/images/brochure-cover.png',
+    src: '/images/brochure-cover.jpg',
     label: 'Project Brochure',
     desc: '17 Kani (2,93,760 Sq Feet) Residential Township — Strategically located right beside the Western Bypass (under construction).',
     category: 'Site',
@@ -78,7 +79,7 @@ const items = [
   },
   {
     id: 10,
-    src: '/images/book-cta.png',
+    src: '/images/book-cta.jpg',
     label: 'Book Your Dream Plot Today',
     desc: 'Only ₹1,00,000 to secure your plot. Call & WhatsApp: 8132953235. Prime Location. Wide Roads. Modern Infrastructure.',
     category: 'Info',
@@ -139,16 +140,20 @@ export default function GalleryPage() {
 
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filtered.map((item) => (
+          {filtered.map((item, index) => (
             <button
               key={item.id}
               onClick={() => openLightbox(item.id)}
               className="group relative rounded-xl overflow-hidden focus:outline-none focus:ring-2 focus:ring-[#C9A84C] bg-white shadow-sm"
             >
-              <img
+              <Image
                 src={item.src}
                 alt={item.label}
-                className="w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                width={6250}
+                height={4419}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                priority={index < 3}
+                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-300"
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors" />
               <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent">
@@ -181,24 +186,27 @@ export default function GalleryPage() {
         >
           <button
             onClick={(e) => { e.stopPropagation(); prev() }}
-            className="absolute left-4 text-white p-2 rounded-full bg-white/10 hover:bg-white/20 z-10"
+            className="absolute left-1 sm:left-4 text-white p-1.5 sm:p-2 rounded-full bg-black/40 sm:bg-white/10 hover:bg-white/20 z-10"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
 
-          <div className="max-w-5xl w-full mx-16" onClick={e => e.stopPropagation()}>
-            <img
+          <div className="max-w-5xl w-full mx-3 sm:mx-16 max-h-screen overflow-y-auto py-4" onClick={e => e.stopPropagation()}>
+            <Image
               src={current.src}
               alt={current.label}
-              className="w-full rounded-xl object-contain max-h-[75vh]"
+              width={6250}
+              height={4419}
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              className="w-full h-auto rounded-xl object-contain max-h-[75vh]"
             />
-            <div className="flex justify-between items-start mt-4 px-1">
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-between items-start mt-4 px-1">
               <div>
                 <p className="text-[#C9A84C] text-xs font-bold uppercase mb-1">{current.category}</p>
                 <h3 className="text-white font-bold text-lg">{current.label}</h3>
                 <p className="text-white/60 text-sm mt-1 max-w-xl">{current.desc}</p>
               </div>
-              <div className="flex items-center gap-4 shrink-0 ml-4">
+              <div className="flex items-center gap-4 shrink-0 sm:ml-4">
                 <p className="text-white/40 text-sm">{currentIndex + 1} / {filtered.length}</p>
                 <button onClick={closeLightbox} className="text-white/70 hover:text-white flex items-center gap-1 text-sm">
                   <X className="w-4 h-4" /> Close
@@ -209,7 +217,7 @@ export default function GalleryPage() {
 
           <button
             onClick={(e) => { e.stopPropagation(); next() }}
-            className="absolute right-4 text-white p-2 rounded-full bg-white/10 hover:bg-white/20 z-10"
+            className="absolute right-1 sm:right-4 text-white p-1.5 sm:p-2 rounded-full bg-black/40 sm:bg-white/10 hover:bg-white/20 z-10"
           >
             <ChevronRight className="w-6 h-6" />
           </button>

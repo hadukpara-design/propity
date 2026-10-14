@@ -63,7 +63,7 @@ export default async function HomePage() {
           <SectionHeader label="Location" title="Strategic Location — All Major Landmarks at a Glance" centered />
           <div className="mt-8 rounded-2xl overflow-hidden shadow-lg border border-gray-100">
             <Image
-              src="/images/location-map.png"
+              src="/images/location-map.jpg"
               alt="17 Kani Residential Township Location Map — Agartala, Tripura"
               width={1400} height={900}
               className="w-full h-auto"
@@ -80,7 +80,7 @@ export default async function HomePage() {
             {/* 5-star hotel */}
             <div className="rounded-2xl overflow-hidden shadow-md">
               <Image
-                src="/images/five-star-hotel.png"
+                src="/images/five-star-hotel.jpg"
                 alt="5-Star Hotel (Under Construction)"
                 width={800} height={600}
                 className="w-full h-auto"
@@ -89,7 +89,7 @@ export default async function HomePage() {
             {/* IPL Stadium */}
             <div className="rounded-2xl overflow-hidden shadow-md">
               <Image
-                src="/images/ipl-stadium.png"
+                src="/images/ipl-stadium.jpg"
                 alt="Upcoming IPL Stadium (Under Construction)"
                 width={800} height={600}
                 className="w-full h-auto"
@@ -102,7 +102,7 @@ export default async function HomePage() {
       {/* Education Hub */}
       <section className="bg-white">
         <Image
-          src="/images/education-hub.png"
+          src="/images/education-hub.jpg"
           alt="Lembucherra Education Hub — Holy Cross, Rajarshi, Agriculture, Fisheries, ICFAI, Central Sanskrit University"
           width={1400} height={900}
           className="w-full h-auto block"
@@ -114,7 +114,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto">
           <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-200">
             <Image
-              src="/images/tuda-master-plan.png"
+              src="/images/tuda-master-plan.jpg"
               alt="TUDA Laxmilunga Special Planning Area — 3D View of Draft Master Plan — Project: Agartala Satellite Town"
               width={1400} height={900}
               className="w-full h-auto"

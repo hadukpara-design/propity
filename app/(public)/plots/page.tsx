@@ -79,7 +79,7 @@ export default async function PlotsPage() {
           {/* Real site plan image */}
           <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
             <img
-              src="/images/site-plan-img.png"
+              src="/images/site-plan-img.jpg"
               alt="17 Kani Residential Township — Official Site Layout Plan with 63 Plots"
               className="w-full"
             />
