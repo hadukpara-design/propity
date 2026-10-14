@@ -5,7 +5,12 @@ export type PropertyVideo = {
 
 // Add a YouTube link and a title for each video. Normal links, youtu.be links
 // and Shorts links all work. While this list is empty the section stays hidden.
-export const propertyVideos: PropertyVideo[] = []
+export const propertyVideos: PropertyVideo[] = [
+  {
+    url: 'https://www.youtube.com/watch?v=rgqvVN_y4qQ',
+    title: 'Flat or Land? Just 12 Min from Agartala | 17 Kani Township',
+  },
+]
 
 export type ParsedVideo = {
   id: string

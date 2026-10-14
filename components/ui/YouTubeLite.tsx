@@ -12,7 +12,12 @@ interface YouTubeLiteProps {
 
 export default function YouTubeLite({ id, title, vertical = false }: YouTubeLiteProps) {
   const [playing, setPlaying] = useState(false)
+  const fallbackThumb = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
   const [thumb, setThumb] = useState(`https://i.ytimg.com/vi/${id}/maxresdefault.jpg`)
+
+  // YouTube answers a missing high-res thumbnail with a tiny grey 120x90 image
+  // rather than an error, so check the size as well as failures.
+  const switchToFallback = () => setThumb(current => (current === fallbackThumb ? current : fallbackThumb))
 
   return (
     <div
@@ -41,7 +46,8 @@ export default function YouTubeLite({ id, title, vertical = false }: YouTubeLite
             src={thumb}
             alt=""
             loading="lazy"
-            onError={() => setThumb(`https://i.ytimg.com/vi/${id}/hqdefault.jpg`)}
+            onError={switchToFallback}
+            onLoad={event => { if (event.currentTarget.naturalWidth <= 120) switchToFallback() }}
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
           <span className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
