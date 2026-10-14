@@ -10,7 +10,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ availableCount }: HeroSectionProps) {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-12 pb-28 md:pt-14">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-12 pb-24 md:pt-14">
       {/* Background — real aerial photo of the land */}
       <div className="absolute inset-0">
         <img
@@ -111,17 +111,6 @@ export default function HeroSection({ availableCount }: HeroSectionProps) {
             </a>
           </div>
         </motion.div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
-        <div className="w-6 h-10 border-2 border-[#1B4332]/40 rounded-full flex items-start justify-center p-1">
-          <motion.div
-            className="w-1 h-2 bg-[#1B4332]/70 rounded-full"
-            animate={{ y: [0, 14, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          />
-        </div>
       </div>
     </section>
   )
