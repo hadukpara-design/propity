@@ -1,5 +1,6 @@
 import { MapPin, Phone, Clock, Navigation, ExternalLink } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -22,10 +23,14 @@ export default function LocationPage() {
 
         {/* Location Map — from brochure */}
         <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-200 mb-6">
-          <img
+          <Image
             src="/images/location-map.png"
             alt="17 Kani Residential Township Location — Agartala, Tripura showing Airport, 5-Star Hotel, IPL Stadium, Tripura University, Lembucherra Education Hub, Western Bypass Road"
-            className="w-full"
+            width={6250}
+            height={4419}
+            sizes="(max-width: 1280px) 100vw, 1280px"
+            priority
+            className="w-full h-auto"
           />
         </div>
 
