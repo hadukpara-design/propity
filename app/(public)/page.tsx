@@ -28,6 +28,8 @@ export default async function HomePage() {
     <div>
       <HeroSection availableCount={availableCount} />
 
+      <VideoSection />
+
       {/* Stats Band */}
       <div className="relative bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] py-12 px-4 overflow-hidden">
         <div className="absolute inset-0 opacity-10"
@@ -52,8 +54,6 @@ export default async function HomePage() {
           </div>
         </div>
       </div>
-
-      <VideoSection />
 
       <WhyInvestSection />
 
