@@ -1,5 +1,6 @@
 import { createClient, isSupabaseConfigured } from '@/lib/supabase/server'
 import HeroSection from '@/components/sections/HeroSection'
+import VideoSection from '@/components/sections/VideoSection'
 import WhyInvestSection from '@/components/sections/WhyInvestSection'
 import LandVsFlatSection from '@/components/sections/LandVsFlatSection'
 import CTABand from '@/components/sections/CTABand'
@@ -51,6 +52,8 @@ export default async function HomePage() {
           </div>
         </div>
       </div>
+
+      <VideoSection />
 
       <WhyInvestSection />
 
