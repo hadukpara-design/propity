@@ -89,7 +89,7 @@ export default async function HomePage() {
             {/* IPL Stadium */}
             <div className="rounded-2xl overflow-hidden shadow-md">
               <Image
-                src="/images/ipl-stadium.jpg"
+                src="/images/ipl-stadium-under-construction.jpg"
                 alt="Upcoming IPL Stadium (Under Construction)"
                 width={800} height={600}
                 className="w-full h-auto"

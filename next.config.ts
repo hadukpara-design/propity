@@ -21,7 +21,6 @@ const nextConfig: NextConfig = {
       ...[
         'aerial-land',
         'education-hub',
-        'ipl-stadium',
         'brochure-cover',
         'book-cta',
         'tuda-master-plan',
@@ -34,6 +33,16 @@ const nextConfig: NextConfig = {
         destination: `/images/${name}.jpg`,
         permanent: true,
       })),
+      {
+        source: '/images/ipl-stadium.png',
+        destination: '/images/ipl-stadium-under-construction.jpg',
+        permanent: true,
+      },
+      {
+        source: '/images/ipl-stadium.jpg',
+        destination: '/images/ipl-stadium-under-construction.jpg',
+        permanent: true,
+      },
     ]
   },
 }

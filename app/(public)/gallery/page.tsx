@@ -39,7 +39,7 @@ const items = [
   },
   {
     id: 5,
-    src: '/images/ipl-stadium.jpg',
+    src: '/images/ipl-stadium-under-construction.jpg',
     label: 'Upcoming IPL Stadium',
     desc: 'Under Construction — State-of-the-art cricket stadium driving massive real estate appreciation in the area.',
     category: 'Landmarks',
